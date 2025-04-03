@@ -11,7 +11,7 @@ import React, {
   
     const fetchBlocks = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/getAllBlocks');
+        const res = await axios.get('http://localhost:3000/getAllBlocks');
         const parsed = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
         setBlocks(parsed);
       } catch (err) {
