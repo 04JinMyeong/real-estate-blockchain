@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import './App.css';
+import backgroundImage from './background.jpg';
 
 import Header from './components/Header';
 import HomeLanding from './components/HomeLanding';
@@ -11,6 +12,7 @@ import SignupSelect from './components/SignupSelect';
 import SignupUser from './components/SignupUser';
 import SignupAgent from './components/SignupAgent';
 import MyPage from './components/MyPage';
+import MainPage from './components/MainPage';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -39,18 +41,24 @@ function App() {
 
   return (
     <Router>
-      <div className="app">
-        <Header user={user} onLogout={handleLogout} />
+      <div className="App" style={{
+        background: `url(${backgroundImage}) no-repeat center center fixed`,
+        backgroundSize: 'cover',
+        minHeight: '100vh'
+      }}>
+        <div className="content-overlay">
+          <Header user={user} onLogout={handleLogout} />
 
-        <Routes>
-          <Route path="/" element={<HomeLanding />} />
-          <Route path="/map" element={<MapView user={user} />} />
-          <Route path="/login" element={<Login onLogin={handleLogin} />} />
-          <Route path="/signup" element={<SignupSelect />} />
-          <Route path="/signup/user" element={<SignupUser />} />
-          <Route path="/signup/agent" element={<SignupAgent />} />
-          <Route path="/mypage" element={<MyPage user={user} />} />
-        </Routes>
+          <Routes>
+            <Route path="/" element={<MainPage />} />
+            <Route path="/map" element={<MapView user={user} />} />
+            <Route path="/login" element={<Login onLogin={handleLogin} />} />
+            <Route path="/signup" element={<SignupSelect />} />
+            <Route path="/signup/user" element={<SignupUser />} />
+            <Route path="/signup/agent" element={<SignupAgent />} />
+            <Route path="/mypage" element={<MyPage user={user} />} />
+          </Routes>
+        </div>
       </div>
     </Router>
   );

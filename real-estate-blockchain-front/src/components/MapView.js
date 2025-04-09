@@ -2,22 +2,15 @@
 import React from 'react';
 import KakaoMap from './KakaoMap';
 import PropertyList from '../PropertyList';
-import PropertyForm from '../PropertyForm';
+import './MapView.css';
 
 const MapView = () => {
   return (
-    <div style={{ display: 'flex', height: 'calc(100vh - 60px)' }}>
-      <div style={{ flex: 8 }}>
+    <div className="mapview-container">
+      <div className="mapview-map">
         <KakaoMap />
       </div>
-      <div
-        style={{
-          flex: 2,
-          overflowY: 'auto',
-          borderLeft: '1px solid #ddd',
-          backgroundColor: '#fff',
-        }}
-      >
+      <div className="mapview-list">
         <PropertyList />
       </div>
     </div>

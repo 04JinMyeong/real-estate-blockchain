@@ -1,8 +1,100 @@
+:root {
+  --primary-color: #0f0f2b;
+  --secondary-color: #6a4fff;
+  --text-color: #333;
+  --white: #ffffff;
+  --navbar-height: 60px;
+}
+
 body {
   margin: 0;
-  background-color: #0f0f2b;
-  color: #ffffff;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--text-color);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.App {
+  min-height: 100vh;
+  padding-top: var(--navbar-height);
+}
+
+.content-overlay {
+  min-height: calc(100vh - var(--navbar-height));
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-section {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 60px;
+  border-radius: 20px;
+}
+
+.hero-section h1 {
+  font-size: 3.2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.hero-section h2 {
+  font-size: 1.8rem;
+  color: #666;
+  margin-bottom: 3rem;
+  font-weight: 500;
+}
+
+.hero-section p {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 0.8rem;
+  line-height: 1.8;
+}
+
+.learn-more {
+  display: inline-block;
+  padding: 1rem 3rem;
+  margin-top: 3rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--white);
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 300px;
+}
+
+.learn-more:hover {
+  background-color: var(--secondary-color);
+}
+
+/* 기타 섹션 스타일 */
+.form-section, .list-section {
+  margin: 20px auto;
+  max-width: 600px;
+  background-color: var(--white);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
 }
 
 .app {
@@ -14,27 +106,40 @@ body {
 }
 
 .map-section {
-  margin-bottom: 40px;
-}
-
-.form-section, .list-section {
   margin: 20px auto;
-  max-width: 600px;
-  background-color: #1a1a3d;
-  padding: 20px;
-  border-radius: 10px;
+  max-width: 1200px;
+  width: 100%;
+  height: 500px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
 }
 
-input, button {
+.map-container {
   width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 5px;
-  border: none;
+  height: 100%;
+  border-radius: 20px;
 }
 
 button {
-  background-color: #6a4fff;
+  background-color: var(--secondary-color);
   color: white;
   cursor: pointer;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: #5a3fee;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(106, 79, 255, 0.2);
+}
+
+/* 메인 페이지 콘텐츠를 위한 추가 스타일 삭제 */
+.content-overlay .hero-section {
+  /* 이 스타일 블록 전체 삭제 */
 }
