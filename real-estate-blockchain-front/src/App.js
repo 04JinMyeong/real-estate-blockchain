@@ -1,30 +1,30 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import './App.css';
+
 import Header from './components/Header';
 import HomeLanding from './components/HomeLanding';
 import MapView from './components/MapView';
 import Login from './components/Login';
-import Signup from './components/Signup';
-import { jwtDecode } from 'jwt-decode';                 // ✅ jwtDecode 추가
+import SignupSelect from './components/SignupSelect';
+import SignupUser from './components/SignupUser';
+import SignupAgent from './components/SignupAgent';
 import MyPage from './components/MyPage';
 
 function App() {
-  const [view, setView] = useState('home');
   const [user, setUser] = useState(null);
 
   const handleLogin = (email) => {
-    setUser({ email });       // ✅ 사용자 상태 저장
-    setView('home');          // 홈으로 이동
+    setUser({ email });
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); // ✅ 토큰 삭제
+    localStorage.removeItem('token');
     setUser(null);
-    setView('home');
   };
 
-   // ✅ 로그인 유지
-   useEffect(() => {
+  useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
@@ -32,21 +32,27 @@ function App() {
         setUser({ email: decoded.email });
       } catch (err) {
         console.error('토큰 디코딩 실패:', err);
-        localStorage.removeItem('token'); // 토큰이 이상하면 제거
+        localStorage.removeItem('token');
       }
     }
   }, []);
 
   return (
-    <div className="app">
-      <Header onNavigate={setView} user={user} onLogout={handleLogout} />
+    <Router>
+      <div className="app">
+        <Header user={user} onLogout={handleLogout} />
 
-      {view === 'home' && <HomeLanding onStart={() => setView('map')} />}
-      {view === 'map' && <MapView user={user} />}
-      {view === 'login' && <Login onLogin={handleLogin} />}
-      {view === 'signup' && <Signup onSignup={() => setView('home')} />}
-      {view === 'mypage' && <MyPage user={user} />}
-    </div>
+        <Routes>
+          <Route path="/" element={<HomeLanding />} />
+          <Route path="/map" element={<MapView user={user} />} />
+          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          <Route path="/signup" element={<SignupSelect />} />
+          <Route path="/signup/user" element={<SignupUser />} />
+          <Route path="/signup/agent" element={<SignupAgent />} />
+          <Route path="/mypage" element={<MyPage user={user} />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
