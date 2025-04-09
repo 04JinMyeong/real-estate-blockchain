@@ -1,0 +1,45 @@
+/* src/components/Header.css */
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0f0f2c;
+  padding: 0.8rem 2rem;
+  height: 60px;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-right: auto;
+}
+
+.logo-img {
+  height: 250px;
+  margin-right: 10px;
+}
+
+.navbar-menu {
+  display: flex;
+}
+
+.navbar-list {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  color: white;
+  font-weight: 500;
+}
+
+.navbar-list li {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.navbar-list li:hover {
+  color: #8a7fff;
+}
