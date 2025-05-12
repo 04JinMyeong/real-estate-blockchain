@@ -1,0 +1,25 @@
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1"
+  ],
+  "credentialSubject": {
+    "id": "did:realestate:c8bf5c980b6f7edc2902fd80541e278f0e16342d503d1680f57060eb94028534",
+    "licenseNum": "서울-123456",
+    "name": "홍길동",
+    "phone": "010-1234-5678",
+    "status": "valid"
+  },
+  "issuanceDate": "2025-05-12T15:21:12+09:00",
+  "issuer": "did:realestate:...",
+  "proof": {
+    "created": "2025-05-12T15:21:12+09:00",
+    "jws": "y+ZkaeBw4yJISUG4cCgtZhdNWfF9hbPRAzdjsCNCnM3OVIfQ5XtXCEbhlqzltv4QXD+d9eP4ZHQWWUQnrVIPCA==",
+    "proofPurpose": "assertionMethod",
+    "type": "Ed25519Signature2020",
+    "verificationMethod": "did:realestate:...#key-1"
+  },
+  "type": [
+    "VerifiableCredential",
+    "RealEstateAgentVC"
+  ]
+}

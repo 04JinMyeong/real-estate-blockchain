@@ -43,4 +43,10 @@ func main() {
     // 5) 결과 출력
     fmt.Println("발급된 VC:")
     fmt.Println(vcJSON)
+
+    // ✅ VC를 파일로 저장 (추가)
+    _ = os.WriteFile("vc.json", []byte(vcJSON), 0644)
+    if err != nil {
+        log.Printf("VC 저장 실패: %v", err)
+    }
 }
