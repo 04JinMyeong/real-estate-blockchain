@@ -1,0 +1,105 @@
+.
+├── .gitignore
+├── backend-structure.txt
+├── blockchain
+│   ├── enroll.go
+│   └── property_chaincode.go
+├── ca-client
+│   ├── fabric-ca-client-config.yaml
+│   ├── msp
+│   │   ├── cacerts
+│   │   ├── IssuerPublicKey
+│   │   ├── IssuerRevocationPublicKey
+│   │   ├── keystore
+│   │   └── signcerts
+│   └── user1
+│       ├── fabric-ca-client-config.yaml
+│       └── msp
+├── ca-server-data
+│   ├── ca-cert.pem
+│   ├── fabric-ca-server-config.yaml
+│   ├── fabric-ca-server.db
+│   ├── IssuerPublicKey
+│   ├── IssuerRevocationPublicKey
+│   └── msp
+│       └── keystore
+├── connection-org1.yaml
+├── controllers
+│   └── authController.go
+├── crypto-config
+│   ├── ordererOrganizations
+│   │   └── example.com
+│   └── peerOrganizations
+│       └── org1.example.com
+├── database
+│   └── db.go
+├── docker-compose.yaml
+├── go.mod
+├── go.sum
+├── handler
+│   ├── property_handler.go
+│   └── user_handler.go
+├── keystore
+│   ├── 05f3db2472c2a8c206a3534f2dbbcd45c0afedd3131ba094895ca83b4d22d2c6_sk
+│   ├── 13632112fc4bdbf302984307ea23074d378a2599a0dde034e4738bde766cbaab_sk
+│   ├── 196e7671760648c7f973f37befdc9e9f31e4072dcd234f0dd7f6f1168eb542fc_sk
+│   ├── 1d2e80732cdaa129363ee7336ba36b79d66abe9636314b682b284a568e3e82df_sk
+│   ├── 22d0fa550c06e9961fddc26d9fc371e1f8cc09c49e400cace83bb60b2dd770d9_sk
+│   ├── 246cc9974c888b635c66c0dcdc17080b4b4547ee229b2503cefef955defb0776_sk
+│   ├── 2a6f268dbd042bfd42a8bc60118f4a0a6b4cc9bfc95a8986ca393e1d8ea54aee_sk
+│   ├── 3014731d8c93b323cbe9f96c1c8f604961cac3c47de1fa12c28bb2b15fb9770a_sk
+│   ├── 338dd38fbfbe8b0e390e841d3dc948670cb16e652ad3376e58d2c3f60c6bab6e_sk
+│   ├── 3af06eadaea7737d9de723250bf988e1b7c24d0b3b6b7f814359e8290ca88d12_sk
+│   ├── 511a9aee6af0a9c66ff9c761d29887902f0534b90b6ce1adf6614a89116e2019_sk
+│   ├── 515e15e10c4773f697aeac2e1be5df08a45c5491aa119794361f84d22d1b472b_sk
+│   ├── 51cddb8bbe49a0c88e7a2a0bc57761ffe22855fa78b14c47c8e6050c5ec581b5_sk
+│   ├── 564fa2679ce9104840c349b7dae2892e7d5a97b0e770ff764fb3f67298b0c933_sk
+│   ├── 57068a2d5592d543717f9067d9fd61c2eca2627b0b9df9108d6d67d2911df271_sk
+│   ├── 591424ec8568321abf2107f37c379aa3d8ebc5ba15451edcfd604301ba409c16_sk
+│   ├── 5fe589e5d1ec443164ca2402ba779b2e00ea3f168e8e5f6c114a715b1f89486b_sk
+│   ├── 668c41d6388db7bb1e0ab7d912988b9e8c8056a4a142cff126e39dde119dab2d_sk
+│   ├── 66bdf555f232058fb245deb60bebb7889bc41418ef41fe53db0947036520654b_sk
+│   ├── 6a304ee806ad7a32de1835040c9b0dcdbd5a350206c203d3b12a59b6af759d7e_sk
+│   ├── 6a8dd5176b65e51afbca6fa46e934235bba17434e3a6bb107fd3fd188e2333c2_sk
+│   ├── 6d6f6376b566db432be26e0f9bfb21d85380228c5371efc28de953c175e87455_sk
+│   ├── 725125d4dd6107d90fb1328d2ebcfde5d576420b537e861a919f2a1e536237de_sk
+│   ├── 734c9566d7adfc44b0a3a73852c5e0154d6bc0231b4738b6dabb5ad0ddbef6a2_sk
+│   ├── 78bbb06eacd557dc481e42c2c5da31312033d818fc2e2eca3806d892b5ed0cd9_sk
+│   ├── 806d71ef70a185b23af04728d7dcbee6d7e76f3e21b82333baa0c2f9f552753d_sk
+│   ├── 80b5f15b4b97e0a74855a809ce9e53e26a720a53d4f6b3780e3a4ac825410594_sk
+│   ├── 881f7439ef3a89597218ac523d2b6cec8598a406e92171ef49c8c8fb8e8339f5_sk
+│   ├── 89a7da25ed98ec9a20beb8d349be2f63d94b4ab4951af36ce4ee6124feb6f4e0_sk
+│   ├── 91f1b5134ca76db64fcf50098332bb9b958ada4c26dc9591e7d4162a05205e47_sk
+│   ├── 9901e27eca72002562265df0f22a094d490bb8b8127dbd87c4b5f35a80ecab0a_sk
+│   ├── 99c674c72876a4a0e3dfd3237701a298870826d8442375994508f2219b2efcce_sk
+│   ├── 9ae1a2e123bcf6552dac2a9d4b788b2d39bd31294e519be1e3af1456471852cf_sk
+│   ├── a32384cc0a6c0a1ef9ef3e2a184636d65e73a90af53d2f40593c50e63de3edbd_sk
+│   ├── a93138d5518ab78231fd912041241c8002cd784ce198248472ef9b6950fbe00e_sk
+│   ├── abdb88f6f0d347754b01871540998d3403cc3fb45bb32723067c914669b473cd_sk
+│   ├── b689982a159ec3a173f544b3f2bd276bb5fe3d7ee51e67734ad417ac01c34484_sk
+│   ├── c328928d7766ff7f9acf5038b18d6004168efed7f828187550787c9b2efbd7cc_sk
+│   ├── c63f21333382a40ecdd87cddf8333e1a65b50b04c441f0166a22938e96419127_sk
+│   ├── caf9467f4b167cd5cb858d258fc5733c624d3d7d4216ffc7fde0b4cb388dc735_sk
+│   ├── cc428cc2edbcd8e184e9c6d567e7f1ffb0109b4e27cf783ddcef59fe022cc2e1_sk
+│   ├── cf2595e40e068522c1ea4deb15eea5731e145b8e2349c7485893785af7fd0795_sk
+│   ├── d01eba978cd397a2e6606e4f539b6b1e809533a32e4e47607dbea09d8cd81197_sk
+│   ├── d1ee4be905f4659f81ac8e8552b22cb89e05392d6542e870b64366808abe04b7_sk
+│   ├── d5b2b3bce55817933f3a96f28bded4803a7f6ec157bde2f77355cf40a12fbd3f_sk
+│   ├── d8e0e307b31f28df2ec9121098192a8f7efab2a7fedd2f87fcbf1b94bc5b3433_sk
+│   ├── e4a840745653ce58675a875a48c12b8ff9f48aa0f366e1b671028c7752021c7a_sk
+│   ├── e8c118a0e65b5bbce03a533d40de3867c2ba2f88e9b2f439d102d01bcf441ef9_sk
+│   ├── ea17fea78fac1d4963082a2e6d2a6fbe2710f617b1c0588de3809bebf6034571_sk
+│   ├── f05adf8db62fc7b40d8c53a8256d5c8f95e022c2018063ae49d91a981e44758d_sk
+│   └── fd73deb9f365a91e6512fdb033d7e7d819845aaf083966ed5321f8daa3ef23a8_sk
+├── main.go
+├── models
+│   └── user.go
+├── organizations
+│   └── peerOrganizations
+│       └── org1.example.com
+├── routes
+│   └── authRouths.go
+└── wallet
+    └── TestUser8.id
+
+27 directories, 76 files

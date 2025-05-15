@@ -33,10 +33,10 @@ func AddProperty(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "✅ 매물 등록 완료!"})
 }
 
-// ✅ 매물 조회
+// ✅ 매물 조회 (ID로)
 func GetProperty(c *gin.Context) {
 	id := c.Param("id")
-	user := c.Query("user") // 쿼리스트링으로 사용자 받기
+	user := c.Query("user")
 
 	if user == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "user 쿼리 파라미터가 필요합니다"})
@@ -50,4 +50,39 @@ func GetProperty(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"property": result})
+}
+
+// ✅ 전체 매물 조회
+func GetAllProperties(c *gin.Context) {
+	user := c.Query("user")
+
+	if user == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "user 쿼리 파라미터가 필요합니다"})
+		return
+	}
+
+	result, err := blockchain.QueryAllProperties(user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "전체 매물 조회 실패", "detail": err.Error()})
+		return
+	}
+
+	c.Data(http.StatusOK, "application/json", []byte(result))
+}
+
+//매물 수정
+func UpdateProperty(c *gin.Context) {
+	var req PropertyRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "잘못된 요청 형식입니다"})
+		return
+	}
+
+	err := blockchain.SubmitUpdateListing(req.User, req.ID, req.Owner, req.Price)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "매물 수정 실패", "detail": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "✅ 매물 수정 완료!"})
 }

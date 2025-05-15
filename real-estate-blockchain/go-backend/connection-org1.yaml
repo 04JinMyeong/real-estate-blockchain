@@ -17,7 +17,6 @@ organizations:
       - ca.org1.example.com
     cryptoPath: organizations/peerOrganizations/org1.example.com/users/admin@org1.example.com/msp
 
-
 orderers:
   orderer.example.com:
     url: grpcs://localhost:7050
@@ -44,6 +43,3 @@ certificateAuthorities:
       path: /Users/jinmyeong/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
     httpOptions:
       verify: false
-
-
-
