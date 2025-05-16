@@ -1,4 +1,3 @@
-// src/components/MapView.js
 import React from 'react';
 import KakaoMap from './KakaoMap';
 import PropertyList from './PropertyList';
@@ -11,7 +10,7 @@ const MapView = () => {
         <KakaoMap />
       </div>
       <div className="mapview-list">
-        <PropertyList />
+        <PropertyList mode="all" />
       </div>
     </div>
   );

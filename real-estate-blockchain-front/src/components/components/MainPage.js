@@ -6,6 +6,7 @@ import { FiGrid, FiLayers, FiTool } from 'react-icons/fi';
 import OurServices from './OurServices';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import Wave from './Wave'
 
 const MainPage = () => {
   const serviceRef = useRef(null);
@@ -38,31 +39,24 @@ const MainPage = () => {
     navigate('/signup');
   };
 
-  return (
+    return (
     <div className="main-page-wrapper">
-      {/* Hero Section */}
-      <section
-        className="hero-modern"
-        style={{
-          backgroundImage: `url(${process.env.PUBLIC_URL + '/back1.jpg'})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
-      >
-        <div className="hero-overlay">
-          <div className="hero-content-wrapper">
-            <div className="hero-content-box">
-              <h1>블록체인 기반의 부동산 플랫폼</h1>
-              <p>신뢰할 수 있는 매물 등록과 거래 이력, AI 분석까지 제공합니다.</p>
-              <div className="cta-buttons">
-                <button className="btn-primary" onClick={handleStart}>시작하기</button>
-                <button className="btn-secondary" onClick={scrollToServices}>더 알아보기</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <section className="hero-section">
+  <div className="hero-content-wrapper">
+    <div className="hero-content-box">
+      <h1>블록체인 기반의 부동산 플랫폼</h1>
+      <p>신뢰할 수 있는 매물 등록과 거래 이력, AI 분석까지 제공합니다.</p>
+      <div className="cta-buttons">
+        <button>시작하기</button>
+        <button>더 알아보기</button>
+      </div>
+    </div>
+  </div>
+  <Wave />  {/* Wave를 Hero 안에서 하단에 위치 */}
+</section>
+
+
+
 
       {/* Services Section */}
       <section className="services-section" ref={serviceRef}>

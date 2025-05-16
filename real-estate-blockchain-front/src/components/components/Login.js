@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Auth.css';
 
-const AUTH_API = 'http://165.229.125.72:8080'; // ✨ 인증 서버 주소
+const AUTH_API = 'https://1af7-165-229-229-137.ngrok-free.app'; // ✨ 서버 주소 (로컬 또는 실제 서버)
 
 const Login = ({ onLogin }) => {
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ id: '', password: '' });
   const navigate = useNavigate();
 
   const handleChange = e => {
@@ -16,25 +16,21 @@ const Login = ({ onLogin }) => {
   const handleSubmit = async e => {
     e.preventDefault();
 
-    // ✅ 테스트 계정 우선 처리 (아이디 비교 방식으로)
-    if (form.email === 'test@test.com' && form.password === '1234') {
-      alert('✅ 테스트 계정 로그인 성공!');
-      localStorage.setItem('token', 'TEST_TOKEN');
-      onLogin?.('test@test.com');
-      navigate('/mypage');
-      return;
-    }
-
     try {
-      const res = await axios.post(`${AUTH_API}/api/auth/login`, {
-        email: form.email,
+      const res = await axios.post(`${AUTH_API}/login`, {
+        id: form.id,
         password: form.password
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
+
       console.log('✅ 로그인 응답:', res.data);
       const token = res.data.token;
       localStorage.setItem('token', token);
       alert('✅ 로그인 성공!');
-      onLogin?.(res.data.email);
+      onLogin?.(form.id);
       navigate('/mypage');
     } catch (err) {
       console.error('❌ 로그인 실패:', err.response || err.message);
@@ -47,9 +43,9 @@ const Login = ({ onLogin }) => {
       <h2>로그인</h2>
       <form onSubmit={handleSubmit}>
         <input
-          name="email"
+          name="id"
           type="text"
-          value={form.email}
+          value={form.id}
           onChange={handleChange}
           placeholder="아이디"
           required

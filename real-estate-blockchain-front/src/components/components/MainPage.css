@@ -8,46 +8,38 @@
 }
 
 .main-page-wrapper {
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
+  background-color: white;
 }
 
 .hero-modern {
   min-height: 100vh;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
+  background-color: #ffffff;
   text-align: center;
-  border-radius: 24px;
-  overflow: hidden;
+  overflow: visible; /* ✅ 중요: wave가 짤리지 않도록 */
 }
 
+
 .hero-overlay {
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: transparent; /* ❗ 흰 배경 제거 */
   padding: 40px 30px;
-  border-radius: 20px;
   max-width: 700px;
   margin: 0 auto;
 }
 
 .hero-content-wrapper {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
+  z-index: 2; /* ✅ 텍스트 위 */}
 
 .hero-content-box {
-  max-width: 700px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  padding: 0 5vw;
+  box-sizing: border-box;
 }
+
 
 .hero-content-box h1 {
   font-size: 3rem;
@@ -220,5 +212,20 @@
   font-size: 1.1rem;
   color: #444;
   line-height: 1.7;
+}
+
+
+.hero-section {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding-top: 60px; /* 네비게이션 높이 */
+  box-sizing: border-box;
+  overflow: hidden;
 }
 

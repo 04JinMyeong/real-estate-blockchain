@@ -15,7 +15,7 @@ function PropertyForm({ user, onRegister }) {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      await axios.post('https://bb52-219-251-84-31.ngrok-free.app/add-property', {
+      await axios.post('https://1af7-165-229-229-137.ngrok-free.app/add-property', {
         user: user.email,
         address: form.address,
         owner: form.owner,
