@@ -1,5 +1,4 @@
 
-````markdown
 # 🏠 Real Estate Blockchain (DID + VC 기반 공인중개사 인증 시스템)
 
 이 프로젝트는 Hyperledger Fabric과 Go를 기반으로  
@@ -148,5 +147,3 @@ go run cmd/verify_test/main.go vc.json
 * [DID 표준 - W3C](https://www.w3.org/TR/did-core/)
 * [Verifiable Credentials (VC) 표준](https://www.w3.org/TR/vc-data-model/)
 * [Ed25519 서명](https://datatracker.ietf.org/doc/html/rfc8032)
-
-```
