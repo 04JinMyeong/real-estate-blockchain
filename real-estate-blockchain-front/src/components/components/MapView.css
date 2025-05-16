@@ -1,0 +1,54 @@
+/* src/components/MapView.css */
+.mapview-container {
+    display: flex;
+    height: calc(100vh - 60px); /* 네비게이션 바 높이만큼 빼줌 */
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.7);
+  }
+  
+  .mapview-map {
+    flex: 2;
+    height: calc(100vh - 110px);
+    border-radius: 20px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin: 5px;
+  }
+  
+  .mapview-list {
+    flex: 1;
+    height: calc(100vh - 100px);
+    overflow-y: auto;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    margin-left: 20px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  
+  .property-list {
+  padding: 1rem;
+}
+
+.property-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.property-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1rem;
+  width: 250px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.property-card:hover {
+  transform: translateY(-5px);
+}
