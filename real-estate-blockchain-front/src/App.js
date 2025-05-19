@@ -5,7 +5,7 @@ import './App.css';
 import backgroundImage from './background.jpg';
 
 import Header from './components/Header';
-import HomeLanding from './components/HomeLanding';
+// import HomeLanding from './components/HomeLanding';
 import MapView from './components/MapView';
 import Login from './components/Login';
 import SignupSelect from './components/SignupSelect';
