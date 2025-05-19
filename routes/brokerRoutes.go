@@ -7,7 +7,9 @@ import (
 )
 
 func BrokerRoutes(r *gin.Engine) {
-  b := r.Group("/api/broker")
-  b.POST("/register", handler.RegisterBroker)
-  b.POST("/verify", handler.VerifyBroker)
+	b := r.Group("/api/brokers")
+	{
+		b.POST("/register-with-did", handler.SignUpBrokerAndIssueDID)
+		b.POST("/verify", handler.VerifyBroker)
+	}
 }

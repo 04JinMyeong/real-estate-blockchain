@@ -1,13 +1,13 @@
 package vc
 
 import (
-	"encoding/base64"
-	"encoding/json"
-	"fmt"
-	"os"
-	"time"
+    "encoding/base64"
+    "encoding/json"
+    "fmt"
+    "os"
+    "time"
 
-	"realestate/crypto"
+    "realestate/crypto"
 )
 
 // GenerateAndSignVC issues a Verifiable Credential for a real estate agent.
