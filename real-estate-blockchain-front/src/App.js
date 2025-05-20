@@ -1,3 +1,4 @@
+// src/App.js
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
@@ -13,6 +14,7 @@ import SignupUser from './components/SignupUser';
 import SignupAgent from './components/SignupAgent';
 import MyPage from './components/MyPage';
 import MainPage from './components/MainPage';
+import UserMypage from './components/UserMypage';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -41,14 +43,19 @@ function App() {
 
   return (
     <Router>
-      <div className="App" style={{
-        background: `url(${backgroundImage}) no-repeat center center fixed`,
-        backgroundSize: 'cover',
-        minHeight: '100vh'
-      }}>
-        <div className="content-overlay">
-          <Header user={user} onLogout={handleLogout} />
+      <div
+        className="App"
+        style={{
+          background: `url(${backgroundImage}) no-repeat center center fixed`,
+          backgroundSize: 'cover',
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      >
+        <Header user={user} onLogout={handleLogout} />
 
+        <main style={{ flex: 1 }}>
           <Routes>
             <Route path="/" element={<MainPage />} />
             <Route path="/map" element={<MapView user={user} />} />
@@ -57,8 +64,9 @@ function App() {
             <Route path="/signup/user" element={<SignupUser />} />
             <Route path="/signup/agent" element={<SignupAgent />} />
             <Route path="/mypage" element={<MyPage user={user} />} />
+            <Route path="/user/mypage" element={<UserMypage user={user} />} />
           </Routes>
-        </div>
+        </main>
       </div>
     </Router>
   );
