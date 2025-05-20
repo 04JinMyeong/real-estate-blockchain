@@ -1,0 +1,42 @@
+.wave-wrapper {
+  position: relative;
+  width: 100vw;
+  height: 300px;
+  overflow: hidden;
+  line-height: 0;
+  z-index: 0;
+}
+
+.wave-layer {
+  position: absolute;
+  top: 0;
+  width: 4320px; /* 1440px * 3 */
+  height: 100%;
+  display: flex;
+}
+
+.wave-layer.back {
+  z-index: 1;
+  animation: waveBackScroll 30s linear infinite;
+}
+
+.wave-layer.front {
+  z-index: 2;
+  animation: waveFrontScroll 15s linear infinite;
+}
+
+.wave {
+  width: 1440px;
+  height: 100%;
+  transform: rotateX(180deg); /* 상단 wave 효과 */
+}
+
+@keyframes waveBackScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-1440px); }
+}
+
+@keyframes waveFrontScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-1440px); }
+}

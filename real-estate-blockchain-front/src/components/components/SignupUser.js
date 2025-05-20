@@ -23,7 +23,7 @@ const SignupUser = () => {
     }
 
     try {
-      await axios.post('https://55e3-165-229-229-137.ngrok-free.app', {
+      await axios.post('http://localhost:3001/api/auth/signup', {
         email: form.email,
         password: form.password,
         role: 'user'

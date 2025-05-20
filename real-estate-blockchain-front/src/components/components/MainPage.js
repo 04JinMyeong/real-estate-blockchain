@@ -39,21 +39,23 @@ const MainPage = () => {
     navigate('/signup');
   };
 
-    return (
+  return (
     <div className="main-page-wrapper">
       <section className="hero-section">
-  <div className="hero-content-wrapper">
-    <div className="hero-content-box">
-      <h1>블록체인 기반의 부동산 플랫폼</h1>
-      <p>신뢰할 수 있는 매물 등록과 거래 이력, AI 분석까지 제공합니다.</p>
-      <div className="cta-buttons">
-        <button>시작하기</button>
-        <button>더 알아보기</button>
-      </div>
-    </div>
-  </div>
-  <Wave />  {/* Wave를 Hero 안에서 하단에 위치 */}
-</section>
+        <Wave />  {/* 상단에 위치 */}
+
+        <div className="hero-content-wrapper">
+          <div className="hero-content-box">
+            <h1>블록체인 기반의 부동산 플랫폼</h1>
+            <p>신뢰할 수 있는 매물 등록과 거래 이력, AI 분석까지 제공합니다.</p>
+            <div className="cta-buttons">
+              <button className="btn-primary" onClick={handleStart}>시작하기</button>
+              <button className="btn-secondary" onClick={scrollToServices}>더 알아보기</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
 
 
 

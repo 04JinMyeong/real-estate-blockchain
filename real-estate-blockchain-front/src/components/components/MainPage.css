@@ -31,7 +31,11 @@
 }
 
 .hero-content-wrapper {
-  z-index: 2; /* ✅ 텍스트 위 */}
+  width: 100%;
+  max-width: 1200px;
+  text-align: center;
+  padding: 60px 20px 100px;
+}
 
 .hero-content-box {
   width: 100%;
@@ -216,16 +220,13 @@
 
 
 .hero-section {
+  width: 100vw;        /* ✅ 브라우저 너비 기준으로 강제 고정 */
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
   position: relative;
-  width: 100vw;
-  height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  text-align: center;
-  padding-top: 60px; /* 네비게이션 높이 */
-  box-sizing: border-box;
-  overflow: hidden;
+  background: white;
 }
-
