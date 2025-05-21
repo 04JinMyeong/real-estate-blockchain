@@ -6,21 +6,33 @@ import './App.css';
 import backgroundImage from './background.jpg';
 
 import Header from './components/Header';
-import HomeLanding from './components/HomeLanding';
+// import HomeLanding from './components/HomeLanding';
 import MapView from './components/MapView';
 import Login from './components/Login';
 import SignupSelect from './components/SignupSelect';
 import SignupUser from './components/SignupUser';
 import SignupAgent from './components/SignupAgent';
-import MyPage from './components/MyPage';
+import AgentMypage from './components/AgentMypage';
 import MainPage from './components/MainPage';
 import UserMypage from './components/UserMypage';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 function App() {
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: false,
+      mirror: true,
+      offset: 1000,
+      easing: "ease-in-out"
+    });
+  }, []);
+
   const [user, setUser] = useState(null);
 
-  const handleLogin = (email) => {
-    setUser({ email });
+  const handleLogin = (userInfo) => {
+    setUser(userInfo); // email, role 모두 user에 저장
   };
 
   const handleLogout = () => {
@@ -33,7 +45,7 @@ function App() {
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        setUser({ email: decoded.email });
+        setUser({ email: decoded.email, role: decoded.role }); // role까지
       } catch (err) {
         console.error('토큰 디코딩 실패:', err);
         localStorage.removeItem('token');
@@ -63,7 +75,8 @@ function App() {
             <Route path="/signup" element={<SignupSelect />} />
             <Route path="/signup/user" element={<SignupUser />} />
             <Route path="/signup/agent" element={<SignupAgent />} />
-            <Route path="/mypage" element={<MyPage user={user} />} />
+
+            <Route path="/agent/mypage" element={<AgentMypage user={user} />} />
             <Route path="/user/mypage" element={<UserMypage user={user} />} />
           </Routes>
         </main>
