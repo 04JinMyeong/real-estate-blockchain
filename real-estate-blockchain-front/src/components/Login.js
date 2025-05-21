@@ -1,52 +1,91 @@
 // src/components/Login.js
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';  // ← named import로 변경
 import axios from 'axios';
 import './Auth.css';
 
+const AUTH_API = 'https://1af7-165-229-229-137.ngrok-free.app';
+
 const Login = ({ onLogin }) => {
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ id: '', password: '' });
+  const navigate = useNavigate();
 
   const handleChange = e => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async e => {
     e.preventDefault();
+
+    // 테스트 계정(하드코딩) 체크
+  if (
+    (form.id === 'testuser@test.com' && form.password === '1234') ||
+    (form.id === 'testagent@test.com' && form.password === '1234')
+  ) {
+    // 테스트 계정일 경우, role 직접 할당
+    const role = form.id === 'testagent@test.com' ? 'agent' : 'user';
+    localStorage.setItem('token', 'test-token');
+    localStorage.setItem('role', role);
+
+    // onLogin 콜백 호출
+    onLogin({ email: form.id, role });
+
+    // 페이지 분기
+    if (role === 'agent') {
+      navigate('/agent/mypage');
+    } else {
+      navigate('/user/mypage');
+    }
+    return; // 더 이상 진행 X
+  }
     try {
-      const res = await axios.post('http://localhost:3001/api/auth/login', {
-        email: form.email,
+      // 1) 로그인 요청
+      const res = await axios.post(`${AUTH_API}/auth/login`, {
+        email: form.id,
         password: form.password
       });
-      console.log('✅ 로그인 응답:', res.data); // 여기서 email 있는지 확인!
+
+      // 2) 토큰 저장
       const token = res.data.token;
-      localStorage.setItem('token', token); // 저장
-      alert('✅ 로그인 성공!');
-      onLogin?.(res.data.email);  // ✅ 이 줄이 핵심!
+      localStorage.setItem('token', token);
+
+      // 3) 디코딩해서 email, role 추출
+      const { email, role } = jwtDecode(token);
+      localStorage.setItem('role', role);
+
+      // 4) 상위 컴포넌트에 로그인 정보 전달
+      onLogin({ email, role });
+
+      // 5) role에 따라 페이지 이동
+      if (role === 'agent') {
+        navigate('/agent/mypage');
+      } else {
+        navigate('/user/mypage');
+      }
     } catch (err) {
-      console.error('❌ 로그인 실패:', err.response || err.message);
-      alert('❌ 로그인 실패: ' + (err.response?.data?.message || err.message));
+      console.error('로그인 오류:', err);
+      alert('로그인에 실패했습니다. 다시 시도해 주세요.');
     }
   };
-  
 
   return (
     <div className="auth-container">
-      <h2>로그인</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="auth-form">
         <input
-          name="email"
+          name="id"
           type="email"
-          value={form.email}
-          onChange={handleChange}
           placeholder="이메일"
+          value={form.id}
+          onChange={handleChange}
           required
         />
         <input
           name="password"
           type="password"
+          placeholder="비밀번호"
           value={form.password}
           onChange={handleChange}
-          placeholder="비밀번호"
           required
         />
         <button type="submit">로그인</button>

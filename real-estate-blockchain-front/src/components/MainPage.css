@@ -1,130 +1,298 @@
-.main-container {
+/* src/components/MainPage.css */
+:root {
+  --primary-color: #7ecbff;
+  --secondary-color: #4aaeff;
+  --accent-color: #003d66;
+  --bg-light: #f5fcff;
+  --text-color: #222;
+}
+
+.main-page-wrapper {
+  background-color: white;
+}
+
+/* 히어로 섹션 */
+.hero-modern {
   min-height: 100vh;
-  width: 100vw;
   position: relative;
-  overflow-x: hidden;
-  background: url('../../public/background.jpg') no-repeat center center fixed;
-  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  text-align: center;
+  overflow: visible; /* wave가 짤리지 않도록 */
+}
+
+.hero-overlay {
+  background-color: transparent;
+  padding: 40px 30px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.hero-content-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  text-align: center;
+  padding: 0px 20px 50px;
+  transform: translateY(-110px);
+}
+
+.hero-content-box {
+  width: 100%;
+  padding: 0 5vw;
+  box-sizing: border-box;
+}
+
+.hero-content-box h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--sky-color, #4aaeff);
+  margin-bottom: 1rem;
+}
+
+.hero-content-box p {
+  font-size: 1.25rem;
+  color: var(--sky-color, #4aaeff);
+  margin-bottom: 2rem;
+}
+
+/* CTA 버튼 */
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: var(--accent-color);
+  color: white;
+}
+.btn-primary:hover {
+  background: #005c99;
+}
+
+.btn-secondary {
+  background: white;
+  color: var(--accent-color);
+  border: 2px solid var(--accent-color);
+}
+.btn-secondary:hover {
+  background: #e6f5ff;
+}
+
+/* 서비스 섹션 */
+.services-section {
+  background: #ffffff;
+  text-align: center;
+  padding: 100px 20px;
+  scroll-margin-top: 80px;
+}
+
+.services-title {
+  font-size: 2.5rem;
+  color: #0f0f2c;
+  margin-bottom: 1rem;
+}
+
+.services-sub {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 3rem;
+}
+
+.services-grid {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.service-box {
+  flex: 1 1 300px;
+  background: #f9fbfc;
+  padding: 40px 20px;
+  border-radius: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease;
+}
+.service-box:hover {
+  transform: translateY(-8px);
+}
+.service-box.active {
+  background: #f3f8fd;
+}
+.service-box h3 {
+  font-size: 1.25rem;
+  margin: 1rem 0 0.5rem;
+  color: #0f0f2c;
+}
+.service-box p {
+  font-size: 1rem;
+  color: #555;
+  margin: 0;
+}
+
+.icon-circle {
+  background: #eef6fb;
+  border-radius: 20px;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
-.hero-section {
-  width: 90vw;
-  height: 90vh;
-  margin: 0 auto;
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  overflow: hidden;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 30px;
+.icon-circle svg {
+  width: 28px;
+  height: 28px;
+  color: #003d66;
 }
 
-.hero-content {
-  flex: 0 0 45%;
-  padding: 0 4%;
-  z-index: 1;
+/* 서비스 상세 섹션 래퍼 */
+.service-detail-wrapper {
+  background-color: #ffffff;
+  padding: 0;
+}
+
+/* 순서별 배경색 */
+.service-detail:nth-child(1) { background-color: #ffffff; }
+.service-detail:nth-child(2) { background-color: #f9fafc; }
+.service-detail:nth-child(3) { background-color: #f2f7fc; }
+
+/* 공통 서비스 상세 스타일 */
+.service-detail {
+  padding: 80px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* 이미지+텍스트 그리드 */
+.detail-grid {
+  display: flex;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: flex-start;   /* 이미지/텍스트 상단 정렬 */
+}
+
+/* 홀수/짝수 레이아웃 교차 */
+.service-detail:nth-of-type(odd) .detail-grid {
+  flex-direction: row;       /* 이미지는 왼쪽, 텍스트 오른쪽 */
+}
+.service-detail:nth-of-type(even) .detail-grid {
+  flex-direction: row-reverse; /* 이미지는 오른쪽, 텍스트 왼쪽 */
+}
+
+/* 이미지 스타일 */
+.detail-grid img {
+  flex-shrink: 0;
+  max-width: 500px;
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
+/* 텍스트 영역 기본 스타일 */
+.detail-text h2 {
+  font-size: 2rem;
+  color: var(--accent-color);      /* 프로젝트에서 정의한 accent 색상 */
+  margin-bottom: 1rem;
+  margin-top: 0;
+}
+.detail-text p {
+  font-size: 1.1rem;
+  color: #444;
+  line-height: 1.7;
+  margin-top: 0;
+}
+
+/* ↓↓↓ 추가된 정렬 보정 스타일 ↓↓↓ */
+.service-detail .detail-text {
+  align-self: flex-start;
+}
+
+@media (min-width: 768px) {
+  /* ① row 컨테이너에 flex-nowrap */
+  .row.flex-nowrap {
+    flex-wrap: nowrap ;
+  }
+
+  /* ② 텍스트 부분(col-md-5) 너비 40%로 고정 */
+  .row.flex-nowrap > .order-2.order-md-1.col-md-5 {
+    flex: 0 0 40% ;
+    max-width: 40% ;
+  }
+
+  /* ③ 이미지 부분(col-md-6) 너비 60%로 고정 */
+  .row.flex-nowrap > .order-1.order-md-2.col-md-6 {
+    flex: 0 0 60% ;
+    max-width: 60% ;
+  }
+}
+/* 홀수/짝수 레이아웃 교차 */
+.service-detail:nth-of-type(odd) .detail-grid {
+  flex-direction: row ;
+}
+.service-detail:nth-of-type(even) .detail-grid {
+  flex-direction: row-reverse ;
+}
+
+/* 이미지 스타일 */
+.detail-grid img {
+  flex-shrink: 0;
+  max-width: 500px;
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
+/* 텍스트 영역 기본 스타일 */
+.detail-text h2 {
+  font-size: 2rem;
+  color: var(--accent-color);
+  margin-bottom: 1rem;
+}
+.detail-text p {
+  font-size: 1.1rem;
+  color: #444;
+  line-height: 1.7;
+}
+
+/* ↓↓↓ 추가된 정렬 보정 스타일 ↓↓↓ */
+/* 텍스트 블록도 flex 아이템으로 상단 정렬 */
+.service-detail .detail-text {
+  align-self: flex-start ;
+}
+/* 제목/단락의 기본 margin-top 제거 */
+.service-detail .detail-text h2,
+.service-detail .detail-text p {
+  margin-top: 0 ;
+}
+
+/* (중복된 hero 섹션 스타일이 있으면 하나만 남기시면 됩니다) */
+.hero-section {
+  width: 100vw;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  max-width: 800px;
+  background: white;
 }
 
-.hero-image {
-  flex: 0 0 55%;
-  height: 100%;
-  background: url('../../public/back1.jpg') no-repeat center center;
-  background-size: cover;
-  position: relative;
-  border-radius: 0 30px 30px 0;
-  transform: scale(1.02);
-  transform-origin: right center;
-}
-
-.hero-image::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
-  border-radius: 0 30px 30px 0;
-}
-
-.hero-section h1 {
-  font-size: clamp(1.8rem, 2.5vw, 2.8rem);
-  font-weight: 800;
-  color: #ffffff;
-  margin-bottom: 1rem;
-  line-height: 1.3;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4),
-               0 0 30px rgba(0, 0, 0, 0.2);
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-  letter-spacing: -0.01em;
-  text-align: center;
-  word-break: keep-all;
-  word-spacing: 0.1em;
-}
-
-.hero-section h2 {
-  font-size: clamp(1rem, 1.4vw, 1.5rem);
-  color: rgba(255, 255, 255, 0.95);
-  margin-bottom: 1.5rem;
-  font-weight: 600;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4),
-               0 0 20px rgba(0, 0, 0, 0.2);
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-  letter-spacing: 0;
-  line-height: 1.4;
-  text-align: center;
-  word-break: keep-all;
-}
-
-.hero-section p {
-  font-size: clamp(0.85rem, 0.9vw, 1rem);
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 0.8rem;
-  line-height: 1.7;
-  font-weight: 400;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-  letter-spacing: 0.01em;
-  word-spacing: 0.05em;
-  opacity: 1;
-  max-width: 90%;
-  text-align: center;
-  word-break: keep-all;
-  background: rgba(0, 0, 0, 0.2);
-  padding: 0.7rem 1rem;
-  border-radius: 8px;
-  backdrop-filter: blur(4px);
-}
-
-.learn-more {
-  margin-top: 2rem;
-  padding: 0.8rem 2.2rem;
-  font-size: clamp(0.85rem, 0.9vw, 1rem);
-  font-weight: 600;
-  color: white;
-  background-color: rgba(15, 15, 44, 0.8);
-  border: 2px solid rgba(255, 255, 255, 0.9);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(5px);
-  align-self: center;
-  letter-spacing: 0.05em;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-.learn-more:hover {
-  background-color: rgba(26, 26, 79, 0.9);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-  border-color: white;
-} 

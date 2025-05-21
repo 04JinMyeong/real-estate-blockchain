@@ -29,3 +29,26 @@
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
   }
   
+  .property-list {
+  padding: 1rem;
+}
+
+.property-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.property-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1rem;
+  width: 250px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.property-card:hover {
+  transform: translateY(-5px);
+}

@@ -1,17 +1,23 @@
 /* src/components/Header.css */
 
 .navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #0f0f2c;
-  padding: 0.8rem 2rem;
-  height: 60px;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
+  height: 60px;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: transparent;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
   z-index: 1000;
+}
+
+.navbar.scrolled {
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-logo {
@@ -22,8 +28,8 @@
 }
 
 .logo-img {
-  height: 50px;
-  margin-right: 10px;
+  height: 200px;
+  margin-right: 20px;
 }
 
 .navbar-menu {
@@ -31,20 +37,26 @@
 }
 
 .navbar-list {
+  list-style: none;
   display: flex;
   gap: 1.5rem;
-  list-style: none;
   margin: 0;
   padding: 0;
-  color: white;
-  font-weight: 500;
 }
 
 .navbar-list li {
-  cursor: pointer;
-  transition: color 0.2s;
+  color: #fff;
+  transition: color 0.3s ease;
+}
+
+.navbar.scrolled .navbar-list li {
+  color: #333;
 }
 
 .navbar-list li:hover {
-  color: #8a7fff;
+  color: #2213c5;
+}
+
+.user-email {
+  font-weight: bold;
 }
