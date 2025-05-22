@@ -139,7 +139,46 @@ button:hover {
   box-shadow: 0 4px 12px rgba(106, 79, 255, 0.2);
 }
 
-/* 메인 페이지 콘텐츠를 위한 추가 스타일 삭제 */
-.content-overlay .hero-section {
-  /* 이 스타일 블록 전체 삭제 */
+/* 다크모드*/
+body.dark-mode {
+  --primary-color: #eee;
+  --secondary-color: #27aeff;
+  --text-color: #f5f6fa;
+  --white: #23252a;
+  background-color: #181818 !important;
+    --card-bg: #23252a;
+  --foreground: #e8e8e8;
+}
+body.dark-mode .services-sub {
+  color: #eee !important;
+}
+body.dark-mode .main-page-wrapper,
+body.dark-mode .service-detail,
+body.dark-mode .hero-section,
+body.dark-mode .form-section,
+body.dark-mode .list-section,
+body.dark-mode .map-section,
+body.dark-mode .service-detail-wrapper,
+body.dark-mode .services-section,
+body.dark-mode .mapview-list,
+body.dark-mode .mapview-container {
+  background: rgba(20, 20, 30, 0.88) !important;
+  color: var(--text-color) !important;
+}
+body.dark-mode input,
+body.dark-mode button {
+  background: #23252a;
+  color: #eee;
+  border: 1px solid #444;
+}
+body.dark-mode .services-title {
+  color:#27aeff;
+}
+
+body.dark-mode .detail-text p{
+  color:#eee
+}
+:root {
+  --card-bg: #f7f7fc;
+  --foreground: #222;
 }

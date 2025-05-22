@@ -19,12 +19,23 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 function App() {
+
+  const [darkMode, setDarkMode]=useState(false);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [darkMode]);
+
   useEffect(() => {
     AOS.init({
       duration: 1000,
       once: false,
       mirror: true,
-      offset: 1000,
+      offset: 60,
       easing: "ease-in-out"
     });
   }, []);
@@ -65,6 +76,26 @@ function App() {
           flexDirection: 'column'
         }}
       >
+        {/* 다크모드 토글 버튼 (상단에 고정) */}
+        <button
+          onClick={() => setDarkMode(dm => !dm)}
+          style={{
+            position: 'fixed',
+            top: 300,
+            left: 18,
+            zIndex: 9999,
+            background: darkMode ? '#191b2b' : '#efefef',
+            color: darkMode ? '#fff' : '#111',
+            border: '1px solid #bbb',
+            padding: '8px 16px',
+            borderRadius: '18px',
+            fontWeight: 'bold',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.10)'
+          }}
+        >
+          {darkMode ? '☀️ ' : '🌙 '}
+        </button>
+
         <Header user={user} onLogout={handleLogout} />
 
         <main style={{ flex: 1 }}>
