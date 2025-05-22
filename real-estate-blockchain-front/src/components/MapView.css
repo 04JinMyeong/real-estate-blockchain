@@ -5,32 +5,33 @@
     width: 100%;
     padding: 20px;
     box-sizing: border-box;
-    background: rgba(255, 255, 255, 0.7);
-  }
-  
-  .mapview-map {
+    background: var(--background, #fff); /* 변수 적용 */
+}
+
+.mapview-map {
     flex: 2;
     height: calc(100vh - 110px);
     border-radius: 20px;
     overflow: hidden;
-    background: #fff;
+    background: var(--card-bg, #fff);
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     margin: 5px;
-  }
-  
-  .mapview-list {
+}
+
+.mapview-list {
     flex: 1;
     height: calc(100vh - 100px);
     overflow-y: auto;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: var(--card-bg, #fff);
     padding: 20px;
     margin-left: 20px;
     border-radius: 20px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  }
-  
-  .property-list {
+}
+
+.property-list {
   padding: 1rem;
+  color: var(--foreground, #222);
 }
 
 .property-grid {
@@ -41,10 +42,11 @@
 }
 
 .property-card {
-  background-color: white;
+  background-color: var(--card-bg, white);
   border-radius: 12px;
   padding: 1rem;
   width: 250px;
+  color: var(--foreground, #222);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease;
 }

@@ -2,7 +2,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MainPage.css';
-import { FiGrid, FiLayers, FiTool } from 'react-icons/fi';
+import { FaBitcoin, FaUserShield, FaCalendarCheck } from 'react-icons/fa';
 // import OurServices from './OurServices';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -16,7 +16,7 @@ const MainPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    AOS.init({ duration: 1000, once: false, mirror: true,offset: 1000,
+    AOS.init({ duration: 1000, once: false, mirror: true,offset: 60,
     easing: "ease-in-out", });
   }, []);
 
@@ -76,10 +76,10 @@ const MainPage = () => {
             data-aos-delay="200"
           >
             <div className="icon-circle">
-              <FiGrid size={28} />
+              <FaBitcoin size={28} />
             </div>
-            <h3>Digital Design</h3>
-            <p>정교하고 아름다운 매물 UI 제공</p>
+            <h3>Block-chain</h3>
+            <p>블록체인기술로 안전한 거래</p>
           </div>
 
           <div
@@ -90,10 +90,10 @@ const MainPage = () => {
             data-aos-delay="300"
           >
             <div className="icon-circle">
-              <FiLayers size={28} />
+              <FaUserShield size={28} />
             </div>
-            <h3>Different</h3>
-            <p>기존 부동산과 다른 블록체인 기반 매물 정보 공개</p>
+            <h3>DID</h3>
+            <p>탈중앙화된 신원인증 기술</p>
           </div>
 
           <div
@@ -104,10 +104,10 @@ const MainPage = () => {
             data-aos-delay="400"
           >
             <div className="icon-circle">
-              <FiTool size={28} />
+              <FaCalendarCheck size={28} />
             </div>
-            <h3>Easy to customize</h3>
-            <p>관리자 및 중개인을 위한 맞춤형 대시보드</p>
+            <h3>Reservation</h3>
+            <p>예약기능 최적화</p>
           </div>
         </div>
       </section>
@@ -116,37 +116,34 @@ const MainPage = () => {
       <section className="service-detail-wrapper">
         <section className="service-detail" ref={digitalDesignRef}>
           <div className="detail-grid" data-aos="fade-right">
-            <img src="/images/ui-design.jpg" alt="UI Design" />
+            <img src="/Blockchain1.png" alt="UI Design" />
             <div className="detail-text">
-              <h2>Digital Design</h2>
-              <p>TrueHome은 사용자가 쉽게 매물을 탐색하고 등록할 수 있도록
-                직관적인 사용자 인터페이스(UI)를 제공합니다. 다양한 필터 기능과 반응형 디자인으로 
-                모든 디바이스에서 편리하게 사용 가능합니다.</p>
+              <h2>Block-chain</h2>
+              <p>TrueHome은 블록체인 기술을 활용하여 거래과정을 안전하게 보호합니다.
+                위변조가 불가능하고 인증된 사용자만 자산에 접근할 수 있습니다.
+              </p>
             </div>
           </div>
         </section>
 
         <section className="service-detail" ref={awesomeSupportRef}>
           <div className="detail-grid" data-aos="fade-left">
-            <img src="/back1.jpg" alt="Different illustration" />
+            <img src="/Did2.png" alt="Different illustration" />
             <div className="detail-text">
-              <h2>Different</h2>
-              <p>기존 부동산 서비스는 정보의 비대칭성과 위변조 가능성이 존재합니다. 
-                TrueHome은 블록체인 기술을 활용해 모든 매물 정보, 등록 이력, 
-                거래 기록을 누구나 열람 가능한 형태로 제공합니다. 
-                이러한 투명성은 신뢰를 기반으로 한 부동산 거래 문화를 만들어갑니다.</p>
+              <h2>DID</h2>
+              <p>탈중앙화된 신원 인증을 통해 사용자와 자산을 연결합니다.
+                관리자 승인 후 중재자가 개입하지 않는 등록이 이루어집니다.
+              </p>
             </div>
           </div>
         </section>
 
         <section className="service-detail" ref={easyCustomizeRef}>
           <div className="detail-grid" data-aos="fade-right">
-            <img src="/images/customize.jpg" alt="Customize" />
+            <img src="/Reservation3.png" alt="Customize" />
             <div className="detail-text">
-              <h2>Easy to customize</h2>
-              <p>중개인과 관리자가 자신의 역할에 맞는 맞춤형 기능을 설정할 수 있도록 
-                유연한 대시보드를 제공합니다.
-                사용자는 쉽게 위젯을 추가하거나 삭제할 수 있어 관리가 효율적입니다.</p>
+              <h2>Reservation</h2>
+              <p>예약 기능을 통해 사용자는 원하는 매물을 손쉽게 확인하고 중개인과 일정을 예약할 수 있어 편리합니다.</p>
             </div>
           </div>
         </section>
