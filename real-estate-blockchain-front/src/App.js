@@ -6,7 +6,6 @@ import './App.css';
 import backgroundImage from './background.jpg';
 
 import Header from './components/Header';
-// import HomeLanding from './components/HomeLanding';
 import MapView from './components/MapView';
 import Login from './components/Login';
 import SignupSelect from './components/SignupSelect';
@@ -19,8 +18,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 function App() {
-
-  const [darkMode, setDarkMode]=useState(false);
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     if (darkMode) {
@@ -43,7 +41,7 @@ function App() {
   const [user, setUser] = useState(null);
 
   const handleLogin = (userInfo) => {
-    setUser(userInfo); // email, role 모두 user에 저장
+    setUser(userInfo); // email, role, username 저장
   };
 
   const handleLogout = () => {
@@ -52,17 +50,26 @@ function App() {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
-        setUser({ email: decoded.email, role: decoded.role }); // role까지
-      } catch (err) {
-        console.error('토큰 디코딩 실패:', err);
-        localStorage.removeItem('token');
-      }
+  const token = localStorage.getItem('token');
+  // JWT 포맷(점(.)이 2개 들어간 문자열)만 디코딩
+  if (token && (token.match(/\./g) || []).length === 2) {
+    try {
+      const decoded = jwtDecode(token);
+      setUser({
+        email: decoded.email,
+        role: decoded.role,
+        username: decoded.username || decoded.email
+      });
+    } catch (err) {
+      console.error('토큰 디코딩 실패:', err);
+      localStorage.removeItem('token');
     }
-  }, []);
+  } else {
+    // 아예 잘못된 값이면 token 삭제
+    localStorage.removeItem('token');
+  }
+}, []);
+
 
   return (
     <Router>
@@ -76,7 +83,6 @@ function App() {
           flexDirection: 'column'
         }}
       >
-        {/* 다크모드 토글 버튼 (상단에 고정) */}
         <button
           onClick={() => setDarkMode(dm => !dm)}
           style={{
@@ -100,13 +106,12 @@ function App() {
 
         <main style={{ flex: 1 }}>
           <Routes>
-            <Route path="/" element={<MainPage />} />
+            <Route path="/" element={<MainPage user={user} />} /> {/* 여기!! */}
             <Route path="/map" element={<MapView user={user} />} />
             <Route path="/login" element={<Login onLogin={handleLogin} />} />
             <Route path="/signup" element={<SignupSelect />} />
             <Route path="/signup/user" element={<SignupUser />} />
             <Route path="/signup/agent" element={<SignupAgent />} />
-
             <Route path="/agent/mypage" element={<AgentMypage user={user} />} />
             <Route path="/user/mypage" element={<UserMypage user={user} />} />
           </Routes>
