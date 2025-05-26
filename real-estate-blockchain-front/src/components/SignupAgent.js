@@ -5,8 +5,8 @@ import nacl from 'tweetnacl'; // Ed25519 키 생성용
 import { encodeBase64 } from 'tweetnacl-util'; // Base64 인코딩용
 import './Auth.css'; // 기존 CSS 파일
 
-const BASE_API_URL = 'http://localhost:8080'; // ⬅️ 로컬 백엔드 서버 주소로 변경!;
-const DID_SIGNUP_API_ENDPOINT = `${BASE_API_URL}/api/brokers/register-with-did`; // 새 엔드포인트
+const BASE_API_URL = 'https://252f-219-251-84-31.ngrok-free.app'; // ⬅️ 로컬 백엔드 서버 주소로 변경!;
+const DID_SIGNUP_API_ENDPOINT = `${BASE_API_URL}/register-with-did`; // 새 엔드포인트
 
 const SignupAgent = () => {
   const navigate = useNavigate();

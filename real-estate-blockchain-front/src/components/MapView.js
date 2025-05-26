@@ -3,14 +3,14 @@ import KakaoMap from './KakaoMap';
 import PropertyList from './PropertyList';
 import './MapView.css';
 
-const MapView = () => {
+const MapView = ({ user }) => {
   return (
     <div className="mapview-container">
       <div className="mapview-map">
         <KakaoMap />
       </div>
       <div className="mapview-list">
-        <PropertyList mode="all" />
+        <PropertyList mode="all" user={user} />
       </div>
     </div>
   );

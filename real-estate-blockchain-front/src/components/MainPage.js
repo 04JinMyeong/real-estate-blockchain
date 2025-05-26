@@ -8,7 +8,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import Wave from './Wave'
 
-const MainPage = () => {
+const MainPage = ({ user }) => {
   const serviceRef = useRef(null);
   const digitalDesignRef = useRef(null);
   const awesomeSupportRef = useRef(null);

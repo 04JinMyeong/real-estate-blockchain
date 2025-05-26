@@ -1,11 +1,10 @@
-// src/components/Login.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';  // ← named import로 변경
+import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 import './Auth.css';
 
-const AUTH_API = 'https://1af7-165-229-229-137.ngrok-free.app';
+const AUTH_API = 'https://252f-219-251-84-31.ngrok-free.app/login';
 
 const Login = ({ onLogin }) => {
   const [form, setForm] = useState({ id: '', password: '' });
@@ -17,32 +16,10 @@ const Login = ({ onLogin }) => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-
-    // 테스트 계정(하드코딩) 체크
-  if (
-    (form.id === 'testuser@test.com' && form.password === '1234') ||
-    (form.id === 'testagent@test.com' && form.password === '1234')
-  ) {
-    // 테스트 계정일 경우, role 직접 할당
-    const role = form.id === 'testagent@test.com' ? 'agent' : 'user';
-    localStorage.setItem('token', 'test-token');
-    localStorage.setItem('role', role);
-
-    // onLogin 콜백 호출
-    onLogin({ email: form.id, role });
-
-    // 페이지 분기
-    if (role === 'agent') {
-      navigate('/agent/mypage');
-    } else {
-      navigate('/user/mypage');
-    }
-    return; // 더 이상 진행 X
-  }
     try {
       // 1) 로그인 요청
-      const res = await axios.post(`${AUTH_API}/auth/login`, {
-        email: form.id,
+      const res = await axios.post(AUTH_API, {
+        username: form.id,
         password: form.password
       });
 
@@ -50,14 +27,24 @@ const Login = ({ onLogin }) => {
       const token = res.data.token;
       localStorage.setItem('token', token);
 
-      // 3) 디코딩해서 email, role 추출
-      const { email, role } = jwtDecode(token);
+      // 3) 토큰에서 정보 추출
+      let email = form.id;
+      let role = 'user';
+      let username = form.id; // 기본값(입력값)
+      try {
+        const decoded = jwtDecode(token);
+        email = decoded.email || form.id;
+        role = decoded.role || 'user';
+        username = decoded.username || decoded.email || form.id;
+      } catch (e) {
+        // 토큰 구조 불분명 시 fallback
+      }
       localStorage.setItem('role', role);
 
-      // 4) 상위 컴포넌트에 로그인 정보 전달
-      onLogin({ email, role });
+      // 4) onLogin에 username 포함!
+      onLogin({ email, role, username });
 
-      // 5) role에 따라 페이지 이동
+      // 5) 페이지 분기
       if (role === 'agent') {
         navigate('/agent/mypage');
       } else {
@@ -74,8 +61,8 @@ const Login = ({ onLogin }) => {
       <form onSubmit={handleSubmit} className="auth-form">
         <input
           name="id"
-          type="email"
-          placeholder="이메일"
+          type="text"
+          placeholder="아이디(이메일 또는 username)"
           value={form.id}
           onChange={handleChange}
           required

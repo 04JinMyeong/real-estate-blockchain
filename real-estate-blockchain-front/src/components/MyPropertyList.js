@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const API_URL = 'https://1af7-165-229-229-137.ngrok-free.app';
+const API_URL = 'https://252f-219-251-84-31.ngrok-free.app';
 
 const MyPropertyList = ({ user }) => {
   const [properties, setProperties] = useState([]);
