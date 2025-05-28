@@ -66,6 +66,7 @@ func SignUpBrokerAndIssueDID(c *gin.Context) {
 	}
 	fmt.Println("✅ DID Document stored for:", agentDIDString)
 
+	
 	// --- 5. 플랫폼 사용자 계정 생성 및 정보 저장 ---
 	// (주의: 이 부분은 실제 애플리케이션의 요구사항에 맞게 확장/보안 강화 필요)
 	db := database.GetDB()
@@ -92,33 +93,37 @@ func SignUpBrokerAndIssueDID(c *gin.Context) {
 	}
 	fmt.Println("✅ Platform user created:", platformUser.Username)
 
-	// (선택적) 공인중개사 프로필 정보 저장 (models.BrokerProfile 같은 새 모델 생성 고려)
-	// 이 모델에는 FullName, LicenseNumber, OfficeAddress, 그리고 platformUser.ID (FK), agentDIDString 등을 저장
-	// 예시:
-	// brokerProfile := models.BrokerProfile{
-	//  PlatformUserID: platformUser.ID,
-	//  DID: agentDIDString,
-	//  FullName: req.FullName,
-	//  LicenseNumber: req.LicenseNumber,
-	//  OfficeAddress: req.OfficeAddress,
-	//  Email: req.Email,
-	// }
-	// if err := db.Create(&brokerProfile).Error; err != nil {
-	//  c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create broker profile: " + err.Error()})
-	//  return
-	// }
-	// fmt.Println("✅ Broker profile created for DID:", agentDIDString)
+	/*
+	(선택적) 공인중개사 프로필 정보 저장 (models.BrokerProfile 같은 새 모델 생성 고려)
+	이 모델에는 FullName, LicenseNumber, OfficeAddress, 그리고 platformUser.ID (FK), agentDIDString 등을 저장
+	예시:
+	brokerProfile := models.BrokerProfile{
+	 PlatformUserID: platformUser.ID,
+	 DID: agentDIDString,
+	 FullName: req.FullName,
+	 LicenseNumber: req.LicenseNumber,
+	 OfficeAddress: req.OfficeAddress,
+	 Email: req.Email,
+	}
+	if err := db.Create(&brokerProfile).Error; err != nil {
+	 c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create broker profile: " + err.Error()})
+	 return
+	}
+	fmt.Println("✅ Broker profile created for DID:", agentDIDString)
+	*/
 
-	// --- 6. (선택적) Fabric 네트워크용 사용자(Identity) 등록 ---
-	// 이 부분은 필요하다면 `blockchain.RegisterAndEnrollUser` 등을 호출합니다.
-	// fabricUsername := agentDIDString // 또는 platformUser.Username 사용
-	// sdk, errSdk := fabsdk.New(config.FromFile(filepath.Clean("./connection-org1.yaml")))
-	// if errSdk == nil {
-	//    defer sdk.Close()
-	//    mspClient, _ := msp.New(sdk.Context(), msp.WithOrg("Org1"))
-	//    // 에러 처리 및 상세 로직 필요
-	//    blockchain.RegisterAndEnrollUser(sdk, mspClient, fabricUsername)
-	// }
+	/*
+	--- 6. (선택적) Fabric 네트워크용 사용자(Identity) 등록 ---
+	이 부분은 필요하다면 `blockchain.RegisterAndEnrollUser` 등을 호출합니다.
+	fabricUsername := agentDIDString // 또는 platformUser.Username 사용
+	sdk, errSdk := fabsdk.New(config.FromFile(filepath.Clean("./connection-org1.yaml")))
+	if errSdk == nil {
+	   defer sdk.Close()
+	   mspClient, _ := msp.New(sdk.Context(), msp.WithOrg("Org1"))
+	   // 에러 처리 및 상세 로직 필요
+	   blockchain.RegisterAndEnrollUser(sdk, mspClient, fabricUsername)
+	}
+	*/
 
 	// --- 7. 성공 응답 ---
 	c.JSON(http.StatusOK, gin.H{

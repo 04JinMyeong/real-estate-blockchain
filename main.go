@@ -34,9 +34,7 @@ func main() {
 	// 공인중개사 관련 API 그룹
 	brokerApiGroup := router.Group("/api/brokers")
 	{
-		// 공인중개사 회원가입 (DID 발급 포함)
-		// 프론트엔드 SignupAgent.js의 DID_SIGNUP_API_ENDPOINT와 일치해야 함
-		brokerApiGroup.POST("/register-with-did", handler.SignUpBrokerAndIssueDID)
+		brokerApiGroup.POST("/register-with-did", handler.SignUpBrokerAndIssueDID)  // 공인중개사 회원가입 (DID 발급 포함). 프론트엔드 SignupAgent.js의 DID_SIGNUP_API_ENDPOINT와 일치해야 함
 
 		// VC 검증 엔드포인트 (기존 유지)
 		brokerApiGroup.POST("/verify", handler.VerifyBroker)
