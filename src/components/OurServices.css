@@ -1,0 +1,43 @@
+.our-services {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.our-services h2 {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.our-services .subtext {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 3rem;
+}
+
+.service-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+}
+
+.service-card {
+  background-color: #fff;
+  padding: 30px;
+  width: 280px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.service-card .icon {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+}

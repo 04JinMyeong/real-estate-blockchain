@@ -1,0 +1,25 @@
+/* src/components/HomeLanding.css */
+.landing-text {
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 40px;
+  border-radius: 12px;
+  color: white;
+  max-width: 600px;
+  text-align: center;
+}
+
+.start-button {
+  margin-top: 20px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  background-color: #6a4fff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.start-button:hover {
+  background-color: #5936e8;
+}
