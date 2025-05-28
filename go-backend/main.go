@@ -45,7 +45,7 @@ func main() {
 	router.POST("/upload-photo", handler.UploadPhoto)
 
 	// 기존 라우팅
-	router.POST("/register-with-did", handler.RegisterUser)
+	router.POST("/register-with-did", handler.SignUpBrokerAndIssueDID)
 	router.POST("/add-property", handler.AddProperty)
 	router.GET("/property/:id", handler.GetProperty)
 	router.GET("/properties", handler.GetAllProperties)
@@ -55,6 +55,14 @@ func main() {
 	router.POST("/login", handler.Login)
 	router.GET("/my-properties", handler.GetMyProperties)
 	router.POST("/auth/login", handler.Login)
+
+	// --- 현 프로젝트의 DID 발급 관련 라우트 추가 ---
+	// SignupAgent.js가 호출하는 경로와 일치해야 합니다.
+	brokerApiGroup := router.Group("/api/brokers") // 사용자님의 기능은 /api/brokers 그룹 하위에 있었음
+	{
+		// 공인중개사 회원가입 (DID 발급 포함)
+		brokerApiGroup.POST("/register-with-did", handler.SignUpBrokerAndIssueDID) //
+	}
 
 	log.Println("🚀 서버 실행 중: http://localhost:8080")
 	if err := router.Run(":8080"); err != nil {

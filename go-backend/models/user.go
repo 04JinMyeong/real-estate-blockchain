@@ -8,4 +8,8 @@ type User struct {
 	Email     string    `json:"email"`
 	Enrolled  bool      `json:"enrolled"`
 	CreatedAt time.Time `json:"created_at"`
+
+	// ID       uint   `json:"id"`
+	// Username string `json:"username"`
+	// Password string `json:"password"`
 }
