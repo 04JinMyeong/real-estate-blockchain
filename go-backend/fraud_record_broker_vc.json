@@ -9,10 +9,10 @@
     "phone": "010-2222-2222",
     "status": "fraudRecord_Exists"
   },
-  "issuanceDate": "2025-05-30T13:58:34+09:00",
+  "issuanceDate": "2025-05-30T21:04:53+09:00",
   "issuer": "did:realestate:f9913979ba3b8ed99b9b74bb418bccf2e04b3c82d1c9d1cad4a7b0fec72ec3fb",
   "proof": {
-    "created": "2025-05-30T13:58:34+09:00",
+    "created": "2025-05-30T21:04:53+09:00",
     "jws": "/t/jJCQ/tcWBeAeq9I03jAid5qGlFD3a+WI4U1xukzJclCsyn+eoA25XtZnAZH0zTW4t8icRevJO8tyuBV00Aw==",
     "proofPurpose": "assertionMethod",
     "type": "Ed25519Signature2020",

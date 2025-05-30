@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"realestate/database"
+	"realestate/database" // database 패키지 임포트
 	"realestate/models"
 
 	"github.com/gin-gonic/gin"
@@ -20,9 +20,13 @@ func Signup(c *gin.Context) {
 		return
 	}
 
+	// GetDB()를 사용하여 realestateDB 인스턴스를 가져옵니다.
+	db := database.GetDB() // ◀◀◀ 변경된 부분
+
 	// 이미 존재하는 사용자 확인
 	var existing models.User
-	if err := database.DB.First(&existing, "id = ?", req.ID).Error; err == nil {
+	// db 변수 (GetDB()로 얻은 인스턴스) 사용
+	if err := db.First(&existing, "id = ?", req.ID).Error; err == nil { // ◀◀◀ 변경된 부분
 		c.JSON(http.StatusConflict, gin.H{"error": "이미 존재하는 사용자입니다"})
 		return
 	}
@@ -34,7 +38,6 @@ func Signup(c *gin.Context) {
 		return
 	}
 
-	// 새 사용자 객체 생성 및 users.db에 저장:
 	newUser := models.User{
 		ID:        req.ID,
 		Password:  string(hashed),
@@ -43,21 +46,31 @@ func Signup(c *gin.Context) {
 		CreatedAt: time.Now(),
 	}
 
-	if err := database.DB.Create(&newUser).Error; err != nil {
+	// DB 저장
+	// db 변수 (GetDB()로 얻은 인스턴스) 사용
+	if err := db.Create(&newUser).Error; err != nil { // ◀◀◀ 변경된 부분
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "사용자 저장 실패"})
 		return
 	}
 
 	// Fabric 사용자 등록 (req.ID 직접 전달)
-	if err := RegisterUserCLI(req.ID); err != nil {
+	if err := RegisterUserCLI(req.ID); err != nil { // RegisterUserCLI는 user_handler.go에 있어야 함
 		log.Printf("❗ 사용자 등록 실패 (Fabric): %v", err)
-		c.JSON(http.StatusOK, gin.H{"message": "✅ 회원가입 완료 (단, 블록체인 사용자 등록 실패)"})
+		c.JSON(http.StatusOK, gin.H{
+			"message": "✅ 회원가입 완료 (단, 블록체인 사용자 등록 실패)",
+			"detail":  err.Error(),
+		})
 		return
 	}
 
 	// 등록 성공 시 DB에 반영
 	newUser.Enrolled = true
-	database.DB.Save(&newUser)
+	// db 변수 (GetDB()로 얻은 인스턴스) 사용
+	if err := db.Save(&newUser).Error; err != nil { // ◀◀◀ 변경된 부분
+		log.Printf("❗ 사용자 Enrolled 상태 업데이트 실패: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "사용자 상태 업데이트 실패"})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "✅ 회원가입 및 블록체인 사용자 등록 완료"})
 }
@@ -73,8 +86,12 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	// GetDB()를 사용하여 realestateDB 인스턴스를 가져옵니다.
+	db := database.GetDB() // ◀◀◀ 변경된 부분
+
 	var user models.User
-	if err := database.DB.First(&user, "id = ?", req.ID).Error; err != nil {
+	// db 변수 (GetDB()로 얻은 인스턴스) 사용
+	if err := db.First(&user, "id = ?", req.ID).Error; err != nil { // ◀◀◀ 변경된 부분
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "존재하지 않는 사용자입니다"})
 		return
 	}

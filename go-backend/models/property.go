@@ -1,22 +1,26 @@
 package models
 
+import (
+	"gorm.io/datatypes"
+)
+
 type Property struct {
-	ID           string       `json:"id"`
-	Address      string       `json:"address"`
-	CreatedBy    string       `json:"createdBy"`
-	PriceHistory []PriceEntry `json:"priceHistory"`
-	OwnerHistory []OwnerEntry `json:"ownerHistory"`
-	ReservedBy   string       `json:"reservedBy,omitempty"`
-	ReservedAt   string       `json:"reservedAt,omitempty"`
-	ExpiresAt    int64        `json:"expiresAt,omitempty"`
+	ID           string         `json:"id" gorm:"primaryKey"`
+	Address      string         `json:"address"`
+	CreatedBy    string         `json:"createdBy"`
+	PriceHistory datatypes.JSON `json:"priceHistory"` // JSON 문자열로 저장
+	OwnerHistory datatypes.JSON `json:"ownerHistory"` // JSON 문자열로 저장
+	ReservedBy   string         `json:"reservedBy"`
+	ReservedAt   string         `json:"reservedAt"`
+	ExpiresAt    int64          `json:"expiresAt"`
 }
 
 type PriceEntry struct {
-	Price string `json:"price"`
 	Date  string `json:"date"`
+	Price string `json:"price"`
 }
 
 type OwnerEntry struct {
-	Owner string `json:"owner"`
 	Date  string `json:"date"`
+	Owner string `json:"owner"`
 }

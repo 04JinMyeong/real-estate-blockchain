@@ -15,32 +15,40 @@ organizations:
       - peer0.org1.example.com
     certificateAuthorities:
       - ca.org1.example.com
-    cryptoPath: organizations/peerOrganizations/org1.example.com/users/admin@org1.example.com/msp
+    # cryptoPath는 클라이언트 사용자의 MSP 경로입니다.
+    # TestUser8, TestUser13 등을 Wallet에서 로드하여 사용할 것이므로,
+    # 이 admin의 cryptoPath는 SDK 초기화 오류와는 직접적인 관련이 적을 수 있습니다.
+    # 하지만 올바른 경로로 설정해두는 것이 좋습니다.
+    # 예: /home/jbj/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+    cryptoPath: /home/jbj/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
 
 orderers:
   orderer.example.com:
-    url: grpcs://localhost:7050
+    url: grpcs://localhost:7050 # 로컬 test-network 오더러 주소
     grpcOptions:
       ssl-target-name-override: orderer.example.com
     tlsCACerts:
-      path: /Users/jinmyeong/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
+      # 🔽 경로 수정 (jbj 사용자 홈 디렉토리 기준) 🔽
+      path: /home/jbj/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
 
 peers:
   peer0.org1.example.com:
-    url: peer0.org1.example.com:7051
+    url: grpcs://localhost:7051 # 로컬 test-network 피어 주소
     grpcOptions:
       ssl-target-name-override: peer0.org1.example.com
       discovery.asLocalhost: true
     tlsCACerts:
-      path: /Users/jinmyeong/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
+      # 🔽 경로 수정 (jbj 사용자 홈 디렉토리 기준) 🔽
+      path: /home/jbj/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
 
 certificateAuthorities:
   ca.org1.example.com:
-    url: https://localhost:7054
+    url: https://localhost:7054 # 로컬 test-network CA 주소
     registrar:
       enrollId: admin
       enrollSecret: adminpw
     tlsCACerts:
-      path: /Users/jinmyeong/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
+      # 🔽 경로 수정 (jbj 사용자 홈 디렉토리 기준) 🔽
+      path: /home/jbj/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
     httpOptions:
-      verify: false
+      verify: false # 개발/테스트 환경

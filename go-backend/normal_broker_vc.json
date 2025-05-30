@@ -9,10 +9,10 @@
     "phone": "010-1111-1111",
     "status": "valid"
   },
-  "issuanceDate": "2025-05-30T13:58:34+09:00",
+  "issuanceDate": "2025-05-30T21:04:53+09:00",
   "issuer": "did:realestate:f9913979ba3b8ed99b9b74bb418bccf2e04b3c82d1c9d1cad4a7b0fec72ec3fb",
   "proof": {
-    "created": "2025-05-30T13:58:34+09:00",
+    "created": "2025-05-30T21:04:53+09:00",
     "jws": "IQ65nJZYXFJDasAgFNz5GVWMxdnwTM4vrrXY+dRgSE+cRioXPpe2QW8ojYVQrjaYqcUCvAhg4ksvDwlNF2ZoAw==",
     "proofPurpose": "assertionMethod",
     "type": "Ed25519Signature2020",

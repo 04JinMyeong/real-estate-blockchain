@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"time"
@@ -23,8 +24,12 @@ import (
 type SignUpBrokerWithDIDRequest struct {
 	PlatformUsername string `json:"platform_username" binding:"required"`
 	PlatformPassword string `json:"platform_password" binding:"required"`
-	// Email, FullName, LicenseNumber, OfficeAddress 필드 제거
-	AgentPublicKey string `json:"agent_public_key" binding:"required"` // 프론트에서 전달하는 Base64 인코딩된 공개키
+	AgentPublicKey   string `json:"agent_public_key" binding:"required"` // 프론트에서 전달하는 Base64 인코딩된 공개키
+}
+
+// VC 검증 요청 시 사용될 구조체
+type VerifyBrokerRequest struct {
+	ID string `json:"id"` // Broker DID
 }
 
 func SignUpBrokerAndIssueDID(c *gin.Context) {
@@ -99,20 +104,28 @@ func SignUpBrokerAndIssueDID(c *gin.Context) {
 	}
 	fmt.Println("✅ Platform user created:", platformUser.ID)
 
+	// --- 6. Fabric Wallet에 사용자 등록 ---  ◀◀◀ 추가된 부분 또는 확인 필요한 부분
+	if err := RegisterUserCLI(platformUser.ID); err != nil { // platformUser.ID는 req.PlatformUsername과 동일
+		log.Printf("❗ DID 발급 공인중개사 Wallet 등록 실패 (User: %s): %v", platformUser.ID, err)
+		// Wallet 등록 실패 시 어떻게 처리할지 정책 필요
+		// 예: 사용자에게는 성공으로 알리되, 로그만 남기거나,
+		// 또는 c.JSON(http.StatusInternalServerError, gin.H{"error": "블록체인 네트워크 사용자 등록 실패"}) 등으로 실패 처리
+		// 여기서는 일단 로그만 남기고 계속 진행 (기존 Signup 함수와 유사하게)
+		c.JSON(http.StatusOK, gin.H{
+			"message":      "Agent registered and DID issued (DB only), but failed to register to Fabric Wallet.",
+			"did":          agentDIDString,
+			"wallet_error": err.Error(),
+		})
+		return
+	}
+	log.Printf("✅ DID 발급 공인중개사 Wallet 등록 성공 (User: %s)\n", platformUser.ID)
+	// Wallet 등록 성공 후 platformUser.Enrolled = true 로 DB 업데이트 필요시 추가
+
 	// --- 최종 성공 응답 ---
-	// 발급된 DID 정보와 함께 성공 메시지를 클라이언트에 전달
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Agent registered and DID issued successfully.",
-		"did":     agentDIDString, // 생성된 공인중개사의 DID
+		"message": "Agent registered, DID issued, and Fabric Wallet registration successful.",
+		"did":     agentDIDString,
 	})
-}
-
-// VerifyBroker 및 signVC 함수는 VC 검증 단계에서 사용되므로 현재 단계에서는 수정하지 않습니다.
-// ... (VerifyBroker, signVC 함수 기존 코드 유지) ...
-
-// VerifyBrokerRequest payload for VC verification
-type VerifyBrokerRequest struct {
-	ID string `json:"id"` // Broker DID
 }
 
 // VerifyBroker checks the validity of a broker's VC
