@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"go-backend/controllers"
+	"realestate/controllers"
 
 	"github.com/gin-gonic/gin"
 )

@@ -27,9 +27,10 @@ orderers:
 
 peers:
   peer0.org1.example.com:
-    url: grpcs://localhost:7051
+    url: peer0.org1.example.com:7051
     grpcOptions:
       ssl-target-name-override: peer0.org1.example.com
+      discovery.asLocalhost: true
     tlsCACerts:
       path: /Users/jinmyeong/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
 
