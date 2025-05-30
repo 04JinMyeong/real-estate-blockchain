@@ -1,0 +1,25 @@
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1"
+  ],
+  "credentialSubject": {
+    "id": "did:realestate:demobroker_normal_001",
+    "licenseNum": "서울-12345-정상",
+    "name": "홍길동 (정상)",
+    "phone": "010-1111-1111",
+    "status": "valid"
+  },
+  "issuanceDate": "2025-05-30T13:58:34+09:00",
+  "issuer": "did:realestate:f9913979ba3b8ed99b9b74bb418bccf2e04b3c82d1c9d1cad4a7b0fec72ec3fb",
+  "proof": {
+    "created": "2025-05-30T13:58:34+09:00",
+    "jws": "IQ65nJZYXFJDasAgFNz5GVWMxdnwTM4vrrXY+dRgSE+cRioXPpe2QW8ojYVQrjaYqcUCvAhg4ksvDwlNF2ZoAw==",
+    "proofPurpose": "assertionMethod",
+    "type": "Ed25519Signature2020",
+    "verificationMethod": "did:realestate:f9913979ba3b8ed99b9b74bb418bccf2e04b3c82d1c9d1cad4a7b0fec72ec3fb#key-1"
+  },
+  "type": [
+    "VerifiableCredential",
+    "RealEstateAgentVC"
+  ]
+}

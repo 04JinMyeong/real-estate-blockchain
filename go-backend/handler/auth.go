@@ -34,6 +34,7 @@ func Signup(c *gin.Context) {
 		return
 	}
 
+	// 새 사용자 객체 생성 및 users.db에 저장:
 	newUser := models.User{
 		ID:        req.ID,
 		Password:  string(hashed),
@@ -42,7 +43,6 @@ func Signup(c *gin.Context) {
 		CreatedAt: time.Now(),
 	}
 
-	// DB 저장
 	if err := database.DB.Create(&newUser).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "사용자 저장 실패"})
 		return

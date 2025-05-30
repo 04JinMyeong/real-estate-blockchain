@@ -8,9 +8,17 @@ import (
 	"realestate/handler"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv" // ◀◀◀ godotenv 패키지 import 추가
 )
 
 func main() {
+	// .env 파일 로드 (애플리케이션 시작 시) ◀◀◀ 추가된 부분
+	err := godotenv.Load() // 기본적으로 프로젝트 루트의 .env 파일을 찾음
+	if err != nil {
+		log.Println("환경 변수 파일을 찾을 수 없습니다 (.env). 수동으로 설정된 환경 변수를 사용합니다.")
+		// .env 파일이 없어도 오류로 간주하지 않고 계속 진행할 수 있도록 처리
+		// 또는 log.Fatal("Error loading .env file") 로 처리하여 .env 파일이 필수임을 강제할 수도 있음
+	}
 	database.InitDB()
 
 	// 커맨드라인 사용자 등록: 예) go run main.go register TestUser9
