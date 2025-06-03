@@ -8,9 +8,6 @@ type User struct {
 	Email     string    `json:"email"`
 	Enrolled  bool      `json:"enrolled"`
 	CreatedAt time.Time `json:"created_at"`
-	Role     string // "user" 또는 "agent"
-
-	// ID       uint   `json:"id"`
-	// Username string `json:"username"`
-	// Password string `json:"password"`
+	Role      string    // "user" 또는 "agent"
+	DID       string    `json:"did,omitempty"` // 공인중개사의 DID 저장용
 }

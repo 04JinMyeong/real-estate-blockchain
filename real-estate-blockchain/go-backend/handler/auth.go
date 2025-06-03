@@ -1,15 +1,21 @@
 package handler
 
 import (
+	"encoding/json" // VC JSON 파싱을 위해 추가
 	"fmt"
 	"net/http"
 	"time"
 
 	"realestate/database"
 	"realestate/models"
+	"realestate/vc" // VC 검증을 위해 vc 패키지 임포트
 
+	// JWT 토큰 생성을 위해 utils 패키지 임포트
+
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
+
+	//	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -71,11 +77,13 @@ func Signup(c *gin.Context) {
 	})
 }
 
-// 로그인 핸들러
+// 로그인 핸들러 (6/3 vc검증로직 추가함.)
 func Login(c *gin.Context) {
 	var req struct {
 		ID       string `json:"id"`
 		Password string `json:"password"`
+		VC       string `json:"vc" binding:"required"` // VC를 JSON 문자열로 받음
+
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -83,8 +91,8 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	// 사용자 id,pw검증(기존db로직.)
 	db := database.GetDB()
-
 	var user models.User
 	if err := db.First(&user, "id = ?", req.ID).Error; err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "존재하지 않는 사용자입니다"})
@@ -96,7 +104,27 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// ✅ JWT 생성
+	// 2.VC 검증 (6/3 추가)
+	// vc 패키지에 정의된 VerifiableCredential 구조체를 사용합니다.
+	var receivedVC vc.VerifiableCredential
+	err := json.Unmarshal([]byte(req.VC), &receivedVC)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "VC 파싱에 실패했습니다. 유효한 VC JSON을 제공해주세요: " + err.Error()})
+		return
+	}
+
+	// 3. VC 유효성 검증
+	// vc/validate.go의 ValidateVC 함수를 호출하여 VC를 검증합니다.
+	// 이 함수는 서명, 발급자, 유효기간, 그리고 'fraudConvictionRecordStatus' 클레임을 검사합니다.
+	err = vc.ValidateVC(receivedVC)
+	if err != nil {
+		// VC 검증 실패 시 구체적인 오류 메시지를 클라이언트에 반환합니다.
+		fmt.Printf("VC 검증 실패: %v\n", err) // 서버 로그에 에러 출력
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "VC 검증 실패: " + err.Error()})
+		return
+	}
+
+	// 3. 모든 과정 통과하면 : ✅ JWT 생성
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": user.ID,
 		"role":    user.Role,
