@@ -1,0 +1,51 @@
+/* src/components/PropertyForm.css */
+
+/* 필요하신 스타일을 추가로 작성하셔도 됩니다. */
+/* 우선은 빈 파일로 두셔도 오류가 사라집니다. */
+
+.property-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.property-form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.property-form .form-group label {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.property-form .form-group input[type="text"],
+.property-form .form-group input[type="number"],
+.property-form .form-group input[type="file"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.property-form img {
+  display: block;
+  margin-top: 8px;
+  max-width: 100%;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.property-form .btn-submit {
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.property-form .btn-submit:hover {
+  background-color: #218838;
+}

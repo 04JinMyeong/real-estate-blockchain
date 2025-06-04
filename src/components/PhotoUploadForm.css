@@ -1,0 +1,36 @@
+/* src/components/PhotoUploadForm.css */
+
+/* 필요하신 스타일을 추가로 작성하셔도 됩니다. */
+/* 우선은 빈 파일로 두셔도 오류가 사라집니다. */
+
+.photo-upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.preview-container {
+  margin-top: 8px;
+}
+
+.preview-img {
+  max-width: 100%;
+  max-height: 200px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.btn-upload {
+  width: fit-content;
+  padding: 6px 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-upload:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
