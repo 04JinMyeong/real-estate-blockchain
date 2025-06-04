@@ -29,15 +29,24 @@ func AddProperty(c *gin.Context) {
 		return
 	}
 
+	// 1) ID 생성
 	propertyID := utils.GeneratePropertyID(req.Address)
 
-	err := blockchain.SubmitAddListing(req.User, propertyID, req.Address, req.Owner, req.Price, req.PhotoURL)
+	// 2) SubmitAddListing 호출 순서: user(=createdBy), id, address, owner, price, photoUrl
+	err := blockchain.SubmitAddListing(
+		req.User,     // createdBy
+		propertyID,   // id
+		req.Address,  // address
+		req.Owner,    // owner
+		req.Price,    // price
+		req.PhotoURL, // photoUrl
+	)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "매물 등록 실패", "detail": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "✅ 매물 등록 완료!", "id": propertyID})
+	c.JSON(http.StatusOK, gin.H{"id": propertyID, "message": "✅ 매물 등록 완료!"})
 }
 
 // ✅ 매물 조회 (ID로)
@@ -50,13 +59,22 @@ func GetProperty(c *gin.Context) {
 		return
 	}
 
+	// 1) 블록체인에서 JSON 직렬화된 문자열을 가져옴
 	result, err := blockchain.QueryProperty(user, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "매물 조회 실패", "detail": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"property": result})
+	// 2) result는 이미 JSON 포맷의 문자열이므로, 다시 언마샬링함
+	var listing map[string]interface{}
+	if err := json.Unmarshal([]byte(result), &listing); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "JSON 언마샬링 실패", "detail": err.Error()})
+		return
+	}
+
+	// 3) JSON 객체로 그대로 내려줌
+	c.JSON(http.StatusOK, gin.H{"property": listing})
 }
 
 // ✅ 전체 매물 조회
@@ -69,21 +87,7 @@ func GetAllProperties(c *gin.Context) {
 		})
 		return
 	}
-
 	c.Data(http.StatusOK, "application/json", []byte(result))
-	/*user := c.Query("user")
-	if user == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "user 쿼리 파라미터가 필요합니다"})
-		return
-	}
-
-	result, err := blockchain.QueryAllProperties(user)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "매물 전체 조회 실패", "detail": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, result)*/
 }
 
 // 매물 수정
@@ -169,4 +173,23 @@ func GetMyProperties(c *gin.Context) {
 		}
 	}
 	c.JSON(http.StatusOK, gin.H{"properties": myListings})
+}
+
+// ✅ 매물 이력(Gin) 조회
+func GetPropertyHistory(c *gin.Context) {
+	propertyID := c.Query("id")
+	user := c.Query("user")
+
+	if propertyID == "" || user == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "쿼리 파라미터 'id'와 'user'가 필요합니다"})
+		return
+	}
+
+	result, err := blockchain.QueryPropertyHistory(user, propertyID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "매물 이력 조회 실패", "detail": err.Error()})
+		return
+	}
+
+	c.Data(http.StatusOK, "application/json", []byte(result))
 }
