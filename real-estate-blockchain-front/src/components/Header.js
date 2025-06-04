@@ -5,6 +5,11 @@ import './Header.css';
 
 const Header = ({ user, onLogout }) => {
   const navigate = useNavigate();
+  console.log('[Header.js] user prop:', user); // user prop 내용 확인
+
+  // 표시할 사용자 이름 결정 (username 우선, 없으면 email, 그것도 없으면 id)
+  // 로그인 시 Login.js에서 username에 사용자 ID (예: "TRUE")를 넣어주고 있음
+  const displayName = user ? (user.username || user.email || user.id || '사용자') : '';
 
   return (
     <header className="navbar">
@@ -15,10 +20,10 @@ const Header = ({ user, onLogout }) => {
         <ul className="navbar-list">
           <li onClick={() => navigate('/')}>홈</li>
           <li onClick={() => navigate('/map')}>매물</li>
-          {user ? (
+          {user && typeof displayName === 'string' ? ( // ◀◀◀ user 객체 존재 및 displayName이 문자열인지 확인
             <>
-              <li onClick={() => navigate('/mypage')} style={{ fontWeight: 'bold' }}>
-                {user.email}님
+              <li onClick={() => navigate(user.role === 'agent' ? '/agent/mypage' : '/user/mypage')} style={{ fontWeight: 'bold' }}>
+                {displayName}님
               </li>
               <li onClick={onLogout}>로그아웃</li>
             </>
