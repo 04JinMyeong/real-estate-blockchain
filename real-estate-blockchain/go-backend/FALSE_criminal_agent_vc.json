@@ -3,13 +3,13 @@
     "https://www.w3.org/2018/credentials/v1",
     "https://example.org/schemas/broker-v1"
   ],
-  "id": "urn:uuid:did:realestate:b096e9938be101dac6d19f01f02b12dc65be99e82afc9720240bd7f1b334e602-20250603174713",
+  "id": "urn:uuid:did:realestate:b096e9938be101dac6d19f01f02b12dc65be99e82afc9720240bd7f1b334e602-20250604205722",
   "type": [
     "VerifiableCredential",
     "RealEstateAgentLicenseCredential"
   ],
   "issuer": "did:realestate:platformIssuer001",
-  "issuanceDate": "2025-06-03T08:47:13Z",
+  "issuanceDate": "2025-06-04T11:57:22Z",
   "credentialSubject": {
     "fraudConvictionRecordStatus": "Exists",
     "id": "did:realestate:b096e9938be101dac6d19f01f02b12dc65be99e82afc9720240bd7f1b334e602",
@@ -20,9 +20,9 @@
   },
   "proof": {
     "type": "Ed25519Signature2018",
-    "created": "2025-06-03T08:47:13Z",
-    "verificationMethod": "did:realestate:platformIssuer001#keys-1",
+    "created": "2025-06-04T11:57:22Z",
+    "verificationMethod": "did:realestate:platformIssuer001#key-1",
     "proofPurpose": "assertionMethod",
-    "jws": "1GDXBif6YcEkOvWxBCxraqzF+ggAk/TSxEZhnK83DZjhAPWACAz/+fFugg8cBuVfNZGNw0wFwjcdQeSYX3IiCQ=="
+    "jws": "7f4l3nF3ySY1zUcfPr2pfpSBQ7GCHE0/M6b5Gx48nlKMH5WR9FDfzGKd8qtq05Rzps7N2gz763iPSReCCY5AAA=="
   }
 }
