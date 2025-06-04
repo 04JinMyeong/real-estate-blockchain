@@ -1,3 +1,4 @@
+// handler/photo.go
 package handler
 
 import (
@@ -8,25 +9,35 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// UploadPhoto handles incoming multipart/form-data with a "photo" field,
+// saves the file under "./uploads", and returns a URL that clients can use to fetch it.
 func UploadPhoto(c *gin.Context) {
-	// 파일 받기
+	// 1. 클라이언트가 보낸 "photo" 파일 추출
 	file, err := c.FormFile("photo")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "파일을 받지 못했습니다."})
 		return
 	}
 
-	// 저장 경로 및 파일 이름 설정 (원래 이름 사용)
+	// 2. 파일 이름 안전하게 추출 (원래 이름을 그대로 사용하되, 경로 구분자는 제거)
 	filename := filepath.Base(file.Filename)
 	savePath := fmt.Sprintf("./uploads/%s", filename)
 
-	// 파일 저장
+	// 3. 실제로 디스크에 "./uploads/filename" 위치로 저장
 	if err := c.SaveUploadedFile(file, savePath); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "파일 저장 실패"})
 		return
 	}
 
-	// 접근 가능한 URL 리턴
-	photoURL := fmt.Sprintf("http://localhost:8080/uploads/%s", filename)
+	// 4. 요청이 들어온 호스트와 프로토콜에 맞춰 접근 가능한 URL 생성
+	//    - c.Request.Host 예: "localhost:8080" 또는 "abcd1234.ngrok.io"
+	//    - c.Request.TLS가 nil이 아니면 https, nil이면 http
+	scheme := "http"
+	if c.Request.TLS != nil {
+		scheme = "https"
+	}
+	photoURL := fmt.Sprintf("%s://%s/uploads/%s", scheme, c.Request.Host, filename)
+
+	// 5. 성공 시 JSON으로 photoUrl 반환
 	c.JSON(http.StatusOK, gin.H{"photoUrl": photoURL})
 }

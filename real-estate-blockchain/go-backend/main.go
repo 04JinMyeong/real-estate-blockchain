@@ -64,6 +64,10 @@ func main() {
 	// ✅ 역할 기반 사용자 등록 API 추가
 	router.POST("/register-user", handler.RegisterUser(db))
 
+	// ✅ [추가] 매물 이력 조회 API 라우터
+	// ex) GET /property/history?id=property001&user=TestUser9
+	router.GET("/property/history", handler.GetPropertyHistory)
+
 	// ✅ 서버 실행
 	log.Println("🚀 서버 실행 중: http://localhost:8080")
 	if err := router.Run(":8080"); err != nil {

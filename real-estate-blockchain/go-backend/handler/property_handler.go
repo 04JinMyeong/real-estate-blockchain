@@ -69,21 +69,7 @@ func GetAllProperties(c *gin.Context) {
 		})
 		return
 	}
-
 	c.Data(http.StatusOK, "application/json", []byte(result))
-	/*user := c.Query("user")
-	if user == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "user 쿼리 파라미터가 필요합니다"})
-		return
-	}
-
-	result, err := blockchain.QueryAllProperties(user)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "매물 전체 조회 실패", "detail": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, result)*/
 }
 
 // 매물 수정
@@ -169,4 +155,23 @@ func GetMyProperties(c *gin.Context) {
 		}
 	}
 	c.JSON(http.StatusOK, gin.H{"properties": myListings})
+}
+
+// ✅ 매물 이력(Gin) 조회
+func GetPropertyHistory(c *gin.Context) {
+	propertyID := c.Query("id")
+	user := c.Query("user")
+
+	if propertyID == "" || user == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "쿼리 파라미터 'id'와 'user'가 필요합니다"})
+		return
+	}
+
+	result, err := blockchain.QueryPropertyHistory(user, propertyID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "매물 이력 조회 실패", "detail": err.Error()})
+		return
+	}
+
+	c.Data(http.StatusOK, "application/json", []byte(result))
 }
