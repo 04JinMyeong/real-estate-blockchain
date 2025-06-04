@@ -37,9 +37,16 @@ const Header = ({ user, onLogout }) => {
 
   return (
     <header className={`navbar ${scrolled ? 'scrolled' : ''}`}>
-      <div className="navbar-logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-        <img src="/truehome-logo.png" alt="TrueHome Logo" className="logo-img" />
-      </div>
+      <div className="navbar-logo">
+  <img
+    src="/truehome-logo.png"
+    alt="TrueHome Logo"
+    className="logo-img"
+    onClick={() => navigate('/')}
+    style={{ cursor: 'pointer' }}
+  />
+</div>
+
 
       <nav className="navbar-menu">
         <ul className="navbar-list">

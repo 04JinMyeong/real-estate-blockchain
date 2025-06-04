@@ -25,6 +25,7 @@
   align-items: center;
   cursor: pointer;
   margin-right: auto;
+  height: 200px;
 }
 
 .logo-img {

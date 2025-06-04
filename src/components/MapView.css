@@ -2,10 +2,12 @@
   display: flex;
   height: calc(100vh - 60px);
   width: 100%;
-  padding: 20px;
+  padding-top: 20px;    /* ← 여기만 남기고 */
   box-sizing: border-box;
   background: var(--background, #fff);
 }
+
+
 .mapview-map {
   flex: 2;
   height: calc(100vh - 110px);
