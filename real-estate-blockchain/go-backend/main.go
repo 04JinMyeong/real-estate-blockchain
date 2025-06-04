@@ -30,11 +30,16 @@ func main() {
 
 	// ✅ CORS 설정
 	router.Use(func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")         // 개발 중에는 모든 출처를 허용합니다. 실제 배포 시에는 특정 도메인으로 제한하는 것이 좋습니다.
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true") // 만약 쿠키나 인증 헤더를 사용한다면 필요할 수 있습니다.
+		// 허용할 헤더 목록을 더 명시적으로 지정합니다. 프론트엔드에서 보내는 Content-Type 및 ngrok 관련 헤더를 포함합니다.
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With, ngrok-skip-browser-warning")
+		// 허용할 HTTP 메소드 목록입니다. OPTIONS가 포함되어야 preflight 요청을 처리할 수 있습니다.
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
+
+		// 브라우저가 보내는 Preflight 요청 (OPTIONS 메소드)에 대한 처리입니다.
 		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
+			c.AbortWithStatus(204) // 204 No Content 응답으로 Preflight 요청 성공을 알립니다.
 			return
 		}
 		c.Next()
@@ -53,7 +58,7 @@ func main() {
 	router.POST("/signup", handler.Signup)
 	router.POST("/login", handler.Login)
 	router.GET("/my-properties", handler.GetMyProperties)
-	router.POST("/auth/login", handler.Login)
+	//	router.POST("/auth/login", handler.Login)
 
 	// ✅ DID 기반 공인중개사 회원가입
 	brokerApiGroup := router.Group("/api/brokers")
