@@ -8,7 +8,6 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/gateway"
 )
 
-// 매물 등록
 func SubmitAddListing(user, id, address, owner, price, photoUrl string) error {
 	walletPath := "./wallet"
 	ccpPath := "./connection-org1.yaml"
@@ -19,7 +18,7 @@ func SubmitAddListing(user, id, address, owner, price, photoUrl string) error {
 	}
 
 	if !wallet.Exists(user) {
-		return fmt.Errorf("사용자 '%s'가 wallet에 존재하지 않습니다", user)
+		return fmt.Errorf("user '%s' 가 wallet에 없음", user)
 	}
 
 	gw, err := gateway.Connect(
@@ -36,9 +35,19 @@ func SubmitAddListing(user, id, address, owner, price, photoUrl string) error {
 		return fmt.Errorf("네트워크 접근 실패: %v", err)
 	}
 
-	contract := network.GetContract("realEstate") // ⬅️ 최신 체인코드 네임
+	contract := network.GetContract("realEstate")
 
-	_, err = contract.SubmitTransaction("AddListing", id, address, owner, price, user, photoUrl)
+	// ❗ 체인코드 시그니처(AddListing) 변경에 맞춰 순서를 조정:
+	//   AddListing(id, address, owner, price, photoUrl, createdBy)
+	_, err = contract.SubmitTransaction(
+		"AddListing",
+		id,
+		address,
+		owner,
+		price,
+		photoUrl,
+		user, // createdBy
+	)
 	if err != nil {
 		return fmt.Errorf("체인코드 AddListing 호출 실패: %v", err)
 	}

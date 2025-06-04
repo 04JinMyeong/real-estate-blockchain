@@ -21,6 +21,7 @@ type Listing struct {
 	ReservedBy   string       `json:"reservedBy"`
 	ReservedAt   string       `json:"reservedAt"`
 	ExpiresAt    int64        `json:"expiresAt"`
+	PhotoURL     string       `json:"photoUrl"`
 	TxID         string       `json:"txID"`
 	Timestamp    string       `json:"timestamp"`
 }
@@ -41,7 +42,7 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 
 func (s *SmartContract) AddListing(
 	ctx contractapi.TransactionContextInterface,
-	id, address, owner, price, createdBy string,
+	id, address, owner, price, photoUrl, createdBy string,
 ) error {
 	listingJSON, err := ctx.GetStub().GetState(id)
 	if err != nil {
@@ -56,11 +57,16 @@ func (s *SmartContract) AddListing(
 		}
 		existing.PriceHistory = append(existing.PriceHistory, PriceEntry{Price: price, Date: currentDate})
 		existing.OwnerHistory = append(existing.OwnerHistory, OwnerEntry{Owner: owner, Date: currentDate})
+		// photoUrl이 비어 있지 않다면 덮어쓰기
+		if photoUrl != "" {
+			existing.PhotoURL = photoUrl
+		}
 
 		updated, _ := json.Marshal(existing)
 		return ctx.GetStub().PutState(id, updated)
 	}
 
+	// 새 매물 생성 시 photoUrl도 함께 저장
 	newListing := Listing{
 		ID:        id,
 		Address:   address,
@@ -74,8 +80,7 @@ func (s *SmartContract) AddListing(
 		ReservedBy: "",
 		ReservedAt: "",
 		ExpiresAt:  0,
-		TxID:       "",
-		Timestamp:  "",
+		PhotoURL:   photoUrl,
 	}
 
 	bytes, _ := json.Marshal(newListing)
@@ -112,7 +117,6 @@ func (s *SmartContract) ReserveListing(
 		return fmt.Errorf("JSON 파싱 실패: %v", err)
 	}
 
-	// 이미 예약되어 있고 아직 만료 전인 경우
 	if listing.ReservedBy != "" && time.Now().Unix() < listing.ExpiresAt {
 		return fmt.Errorf("이미 예약된 매물입니다 (예약자: %s)", listing.ReservedBy)
 	}
@@ -151,12 +155,10 @@ func (s *SmartContract) ReleaseListing(
 		return fmt.Errorf("JSON 파싱 실패: %v", err)
 	}
 
-	// 예약된 상태가 아니면 그대로
 	if listing.ReservedBy == "" {
 		return nil
 	}
 
-	// 현재 시각이 ExpiresAt을 넘으면 해제
 	if time.Now().Unix() > listing.ExpiresAt {
 		listing.ReservedBy = ""
 		listing.ReservedAt = ""
@@ -180,7 +182,6 @@ func (s *SmartContract) GetAllListings(ctx contractapi.TransactionContextInterfa
 		resp, _ := it.Next()
 		var l Listing
 		_ = json.Unmarshal(resp.Value, &l)
-		// 빈 TxID, Timestamp 필드 초기화
 		l.TxID = ""
 		l.Timestamp = ""
 		result = append(result, &l)
