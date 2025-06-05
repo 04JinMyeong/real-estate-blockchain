@@ -6,7 +6,8 @@ import { encodeBase64 } from 'tweetnacl-util'; // Base64 인코딩용
 import './Auth.css'; // 기존 CSS 파일
 
 
-const BASE_API_URL = 'https://2094-165-229-229-106.ngrok-free.app'; // ⬅️ 로컬 백엔드 서버 주소로 잠시 변경함
+const BASE_API_URL = 'http://localhost:8080'
+//const BASE_API_URL = 'https://2094-165-229-229-106.ngrok-free.app'; // ⬅️ 로컬 백엔드 서버 주소로 잠시 변경함
 const DID_SIGNUP_API_ENDPOINT = `${BASE_API_URL}/api/brokers/register-with-did`; // 새 엔드포인트
 
 const SignupAgent = () => {

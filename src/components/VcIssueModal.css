@@ -1,0 +1,85 @@
+/* src/components/VcIssueModal.css */
+
+/* 1) Overlay: 화면 전체를 어둡게 덮음 */
+.vc-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 반투명 검정 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* 다른 요소 위에 보이기 위해 충분히 큰 값 */
+  }
+  
+  /* 2) Modal Content: 흰색 박스 (가운데 정렬) */
+  .vc-modal-content {
+    background-color: #ffffff;
+    width: 400px;
+    max-width: 90%;
+    border-radius: 8px;
+    padding: 24px;
+    position: relative;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* 3) 닫기 버튼 (×) */
+  .vc-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+  }
+  
+  /* 4) 제목 스타일 */
+  .vc-modal-content h2 {
+    margin-top: 0;
+    font-size: 22px;
+    color: #003f5c;
+    text-align: center;
+  }
+  
+  /* 5) 폼 전체 레이아웃 */
+  .vc-issue-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  
+  /* 6) 라벨(label) 스타일 */
+  .vc-issue-form label {
+    font-size: 14px;
+    color: #003f5c;
+  }
+  
+  /* 7) 입력창(input) 스타일 */
+  .vc-issue-form input {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+  }
+  
+  /* 8) 제출 버튼 스타일 */
+  .vc-submit-button {
+    margin-top: 12px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #003f5c;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .vc-submit-button:hover {
+    background-color: #005689;
+  }
+  

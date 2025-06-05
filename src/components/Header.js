@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Header.css';
+import VcIssueModal from './VcIssueModal'; // 가상화폐 발급 모달 컴포넌트
 
 const Header = ({ user, onLogout }) => {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
+  const [showVcModal, setShowVcModal] = useState(false);
 
   // 스크롤 감지
   useEffect(() => {
@@ -38,20 +40,29 @@ const Header = ({ user, onLogout }) => {
   return (
     <header className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="navbar-logo">
-  <img
-    src="/truehome-logo.png"
-    alt="TrueHome Logo"
-    className="logo-img"
-    onClick={() => navigate('/')}
-    style={{ cursor: 'pointer' }}
-  />
-</div>
+        <img
+          src="/truehome-logo.png"
+          alt="TrueHome Logo"
+          className="logo-img"
+          onClick={() => navigate('/')}
+          style={{ cursor: 'pointer' }}
+        />
+      </div>
 
 
       <nav className="navbar-menu">
         <ul className="navbar-list">
           <li onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>홈</li>
           <li onClick={() => navigate('/map')} style={{ cursor: 'pointer' }}>매물</li>
+
+          {/* ② VC발급받기 버튼 */}
+          <li
+            className="vc-button"
+            onClick={() => setShowVcModal(true)}
+            style={{ cursor: 'pointer' }}
+          >
+            VC발급받기
+          </li>
 
           {user ? (
             <>
@@ -68,6 +79,11 @@ const Header = ({ user, onLogout }) => {
           )}
         </ul>
       </nav>
+
+      {/* ③ showVcModal이 true일 때만 모달을 렌더링 */}
+      {showVcModal && (
+        <VcIssueModal onClose={() => setShowVcModal(false)} />
+      )}
     </header>
   );
 };
