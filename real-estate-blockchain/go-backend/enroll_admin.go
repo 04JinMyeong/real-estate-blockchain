@@ -10,7 +10,7 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/gateway"
 )
 
-func main() {
+func Enrollmain() {
 	sdk, err := fabsdk.New(config.FromFile("./connection-org1.yaml"))
 	if err != nil {
 		log.Fatalf("❌ SDK 생성 실패: %v", err)

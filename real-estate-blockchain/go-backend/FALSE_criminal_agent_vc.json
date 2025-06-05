@@ -1,0 +1,28 @@
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "https://example.org/schemas/broker-v1"
+  ],
+  "id": "urn:uuid:did:realestate:2141f50f9b48f987f920518789eb16d0e831de9087fcb9bcc193e5def9ad5d27-20250605182957",
+  "type": [
+    "VerifiableCredential",
+    "RealEstateAgentLicenseCredential"
+  ],
+  "issuer": "did:realestate:platformIssuer001",
+  "issuanceDate": "2025-06-05T09:29:57Z",
+  "credentialSubject": {
+    "fraudConvictionRecordStatus": "Exists",
+    "id": "did:realestate:2141f50f9b48f987f920518789eb16d0e831de9087fcb9bcc193e5def9ad5d27",
+    "isLicensedBroker": true,
+    "licenseHolderName": "박사기",
+    "licenseNumber": "110-2025-00002",
+    "phone": "010-2222-2222"
+  },
+  "proof": {
+    "type": "Ed25519Signature2018",
+    "created": "2025-06-05T09:29:57Z",
+    "verificationMethod": "did:realestate:platformIssuer001#key-1",
+    "proofPurpose": "assertionMethod",
+    "jws": "cNLCEbZQe+MQ6dJdSYpo4XUfE68xs63GYl/1GLCONvT6aoyC5HIGDv7hjmBI5M49PrZ0cweOX0/oCjLIW+AWCg=="
+  }
+}

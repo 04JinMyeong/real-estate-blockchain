@@ -1,0 +1,28 @@
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "https://example.org/schemas/broker-v1"
+  ],
+  "id": "urn:uuid:did:realestate:3d7c5c838186c1ac13501ee94f76386f3525a2f3964d4fc4b00bfcd07b88930c-20250605182957",
+  "type": [
+    "VerifiableCredential",
+    "RealEstateAgentLicenseCredential"
+  ],
+  "issuer": "did:realestate:platformIssuer001",
+  "issuanceDate": "2025-06-05T09:29:57Z",
+  "credentialSubject": {
+    "fraudConvictionRecordStatus": "None",
+    "id": "did:realestate:3d7c5c838186c1ac13501ee94f76386f3525a2f3964d4fc4b00bfcd07b88930c",
+    "isLicensedBroker": true,
+    "licenseHolderName": "김정상",
+    "licenseNumber": "110-2025-00001",
+    "phone": "010-1111-1111"
+  },
+  "proof": {
+    "type": "Ed25519Signature2018",
+    "created": "2025-06-05T09:29:57Z",
+    "verificationMethod": "did:realestate:platformIssuer001#key-1",
+    "proofPurpose": "assertionMethod",
+    "jws": "+c7NBiQo7cps/SCK4avW1mBbNWFG2aPtbA6NHkrOa/Bc1+WMwzoL4H8GlRrNrEb4th2als6zXNOlqNK7BLACBQ=="
+  }
+}

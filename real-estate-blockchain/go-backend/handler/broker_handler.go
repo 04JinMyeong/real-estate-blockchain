@@ -78,7 +78,9 @@ func SignUpBrokerAndIssueDID(c *gin.Context) {
 		Password:  string(hashedPassword),
 		Enrolled:  false,
 		CreatedAt: time.Now(),
-		Role:      "agent", // 중개인임을 명시
+		Role:      "agent",        // 중개인임을 명시
+		DID:       agentDIDString, // <<< 여기에 생성된 DID 저장 (중요!)
+
 	}
 
 	if err := db.Create(&platformUser).Error; err != nil {
