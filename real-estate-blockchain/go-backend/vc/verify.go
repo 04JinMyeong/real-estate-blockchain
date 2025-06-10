@@ -1,130 +1,137 @@
 package vc
 
 import (
+	"crypto/ecdsa"    // ◀◀◀ ECDSA 암호화 관련 패키지
+	"crypto/elliptic" // ◀◀◀ 타원 곡선 암호화 관련 패키지
+	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"os"
-	"strings"
-
-	"realestate/crypto"
+	"io/ioutil" // ◀◀◀ HTTP 응답을 읽기 위한 패키지
+	"math/big"  // ◀◀◀ 큰 정수 연산을 위한 패키지
+	"net/http"  // ◀◀◀ HTTP 요청을 위한 패키지
 )
 
-// VerifyVC 검증 결과와 이유(에러 메시지)를 반환합니다.
-// vcJSON: 검증할 VC 전문(JSON 문자열)
-func VerifyVC(vcJSON string) (bool, error) {
-	fmt.Println("===== [VerifyVC] 함수 시작 =====")
-	// 입력된 VC JSON 문자열의 일부를 로그로 남깁니다. (너무 길 경우를 대비)
-	// func min(a, b int) int { if a < b { return a; }; return b; } 와 같은 헬퍼 함수가 필요합니다.
-	// 이 함수는 파일 하단이나 별도 유틸리티 파일에 추가해주세요.
-	// fmt.Println("받은 VC JSON (일부):", string([]rune(vcJSON)[:min(100, len(vcJSON))]))
+// VC 구조체와 Proof 구조체는 vc 패키지 내 다른 파일(예: issuer.go)에 이미 정의되어 있어야 합니다.
+// 만약 정의되어 있지 않다면, 아래 주석을 해제하여 추가해주세요.
+/*
+type VerifiableCredential struct {
+	Context           []string    `json:"@context"`
+	ID                string      `json:"id"`
+	Type              []string    `json:"type"`
+	Issuer            string      `json:"issuer"`
+	IssuanceDate      string      `json:"issuanceDate"`
+	CredentialSubject interface{} `json:"credentialSubject"`
+	Proof             *Proof      `json:"proof,omitempty"`
+}
 
-	// 1. VC 전체 JSON을 VerifiableCredential 구조체로 언마샬
-	var vcData VerifiableCredential // issuer.go 에 정의된 구조체 사용
+type Proof struct {
+	Type               string `json:"type"`
+	Created            string `json:"created"`
+	VerificationMethod string `json:"verificationMethod"`
+	ProofPurpose       string `json:"proofPurpose"`
+	Jws                string `json:"jws"`
+}
+*/
+
+// getIssuerPublicKey 함수는 목업 서버로부터 발급자의 공개키를 가져옵니다.
+func getIssuerPublicKey(issuerDID string) (*ecdsa.PublicKey, error) {
+	// 실제 서비스에서는 issuer의 DID Document를 리졸브해서 공개키를 찾아야 합니다.
+	// 데모에서는 간단히 목업 서버의 API를 호출해서 공개키를 가져옵니다.
+	resp, err := http.Get("http://localhost:8083/public-key")
+	if err != nil {
+		return nil, fmt.Errorf("목업 API에서 공개키를 가져오는 데 실패: %w", err)
+	}
+	defer resp.Body.Close()
+
+	body, _ := ioutil.ReadAll(resp.Body)
+	var res struct {
+		PublicKey string `json:"publicKey"`
+	}
+	if err := json.Unmarshal(body, &res); err != nil {
+		return nil, fmt.Errorf("공개키 API 응답 파싱 실패: %w", err)
+	}
+
+	pubKeyBytes, err := base64.StdEncoding.DecodeString(res.PublicKey)
+	if err != nil {
+		return nil, fmt.Errorf("공개키 디코딩 실패: %w", err)
+	}
+
+	x, y := elliptic.Unmarshal(elliptic.P256(), pubKeyBytes)
+	if x == nil {
+		return nil, errors.New("잘못된 공개키 형식")
+	}
+	return &ecdsa.PublicKey{Curve: elliptic.P256(), X: x, Y: y}, nil
+}
+
+// VerifyVC 함수는 VC의 서명과 내용을 검증합니다.
+func VerifyVC(vcJSON string) (bool, error) {
+	fmt.Println("===== [VerifyVC] 새로운 검증 로직 시작 =====")
+	var vcData VerifiableCredential
 	if err := json.Unmarshal([]byte(vcJSON), &vcData); err != nil {
-		fmt.Println("❌ [VerifyVC] VC JSON 파싱 실패:", err)
 		return false, fmt.Errorf("VC JSON 파싱 실패: %w", err)
 	}
-	// CredentialSubject가 map[string]interface{}로 파싱되었는지 확인 후 주요 정보 로깅
-	var subjectID string
-	if csMap, ok := vcData.CredentialSubject.(map[string]interface{}); ok {
-		if id, idOk := csMap["id"].(string); idOk {
-			subjectID = id
-		}
-	}
-	fmt.Println("✅ [VerifyVC] VC JSON 파싱 성공. Issuer:", vcData.Issuer, ", Subject ID (from VC):", subjectID)
 
-	// 2. Proof 필드가 존재하는지 확인
-	if vcData.Proof == nil {
-		fmt.Println("❌ [VerifyVC] Proof 필드 없음")
-		return false, errors.New("proof 필드가 없습니다")
+	// 1. Proof 필드 및 JWS 확인
+	if vcData.Proof == nil || vcData.Proof.Jws == "" {
+		fmt.Println("❌ [VerifyVC] Proof 필드 또는 JWS 서명이 없음")
+		return false, errors.New("VC에 유효한 Proof(서명)가 없습니다")
 	}
-	proof := vcData.Proof // 이제 proof는 *vc.Proof 타입입니다.
-	fmt.Println("✅ [VerifyVC] Proof 필드 확인됨. Type:", proof.Type)
+	fmt.Println("✅ [VerifyVC] Proof 필드 확인됨. Type:", vcData.Proof.Type)
 
-	// 3. verificationMethod가 맞는지 확인 (ex: issuerDID#key-1)
-	issuerDID := os.Getenv("ISSUER_DID")
-	if issuerDID == "" {
-		fmt.Println("❌ [VerifyVC] 환경 변수 ISSUER_DID 설정 안됨")
-		return false, errors.New("서버 설정 오류: 발급자 DID가 지정되지 않았습니다")
-	}
-	// issuer.go에서 #key-1 로 생성했으므로 여기서도 동일하게 사용
-	expectedVM := issuerDID + "#key-1"
-	if proof.VerificationMethod != expectedVM {
-		fmt.Printf("❌ [VerifyVC] verificationMethod 불일치: VC내 값(%s) vs 기대값(%s)\n", proof.VerificationMethod, expectedVM)
-		return false, fmt.Errorf("verificationMethod 불일치: VC내 값(%s) vs 기대값(%s)", proof.VerificationMethod, expectedVM)
-	}
-	fmt.Println("✅ [VerifyVC] verificationMethod 일치 확인됨:", proof.VerificationMethod)
-
-	// 4. payloadBytes 재생산: Proof 제외 상태의 VC 전체 JSON
-	//    vcData는 이미 VerifiableCredential 구조체이므로, Proof 필드만 nil로 설정하고 마샬링합니다.
-	vcForSigning := vcData   // 구조체 복사
-	vcForSigning.Proof = nil // 서명 대상에서 Proof 제외
-	payloadBytes, err := json.Marshal(vcForSigning)
-	if err != nil {
-		fmt.Println("❌ [VerifyVC] payload 재생성 실패:", err)
-		return false, fmt.Errorf("VC 서명 대상 페이로드 재생성 실패: %w", err)
-	}
-
-	fmt.Println("===== [VerifyVC DEBUG] 검증 시 payloadBytes(JSON) =====")
-	fmt.Println(string(payloadBytes))
-	fmt.Println("============================================")
-
-	// 5. Base64로 저장된 JWS(서명)를 디코딩하여 바이트 시그니처 얻기
-	decodedSig, err := base64.StdEncoding.DecodeString(proof.Jws)
+	// 2. 서명(JWS) 값을 디코딩
+	signatureBytes, err := base64.RawURLEncoding.DecodeString(vcData.Proof.Jws)
 	if err != nil {
 		fmt.Println("❌ [VerifyVC] JWS 서명 디코딩 실패:", err)
-		return false, fmt.Errorf("JWS 서명 디코딩 실패: %w", err)
+		return false, fmt.Errorf("VC 서명(JWS) 디코딩 실패: %w", err)
 	}
-	fmt.Println("✅ [VerifyVC] JWS 서명 디코딩 성공")
+	// P-256 서명은 64바이트 (r, s 각각 32바이트)
+	if len(signatureBytes) != 64 {
+		return false, errors.New("잘못된 ECDSA 서명 길이")
+	}
+	// r, s 값 분리
+	r := new(big.Int).SetBytes(signatureBytes[:32])
+	s := new(big.Int).SetBytes(signatureBytes[32:])
 
-	// 6. 서명 검증 (crypto.Verify 호출)
-	// crypto.Verify는 PUBLIC_KEY_PATH 환경 변수를 내부적으로 사용
-	signatureValid, err := crypto.Verify(payloadBytes, decodedSig)
+	// 3. 검증을 위해 원본 payload 재생성 (Proof를 제외한 나머지 부분)
+	originalVCData := vcData
+	originalVCData.Proof = nil
+	payloadBytes, err := json.Marshal(originalVCData)
 	if err != nil {
-		fmt.Println("❌ [VerifyVC] 서명 검증 중 crypto.Verify 오류:", err)
-		return false, fmt.Errorf("서명 검증 중 오류 발생: %w", err)
+		return false, fmt.Errorf("검증용 VC 데이터 생성 실패: %w", err)
 	}
-	if !signatureValid {
-		fmt.Println("❌ [VerifyVC] 서명 불일치! VC가 위조 또는 변조됨")
-		return false, errors.New("서명 불일치: VC가 위조 또는 변조됨")
-	}
-	fmt.Println("✅ [VerifyVC] 서명 검증 통과!")
+	// 원본 데이터의 해시 계산
+	hash := sha256.Sum256(payloadBytes)
 
-	// 7. fraudConvictionRecordStatus 클레임 확인 (핵심 추가 로직)
-	// vcData.CredentialSubject는 interface{} 타입이므로, 실제 타입으로 변환(타입 단언)해야 합니다.
-	// vc/issuer.go에서는 map[string]interface{}로 생성했으므로 동일하게 가정합니다.
+	// 4. 발급자의 공개키 가져오기
+	issuerPubKey, err := getIssuerPublicKey(vcData.Issuer)
+	if err != nil {
+		return false, err
+	}
+
+	// 5. 공개키로 서명 검증
+	isValid := ecdsa.Verify(issuerPubKey, hash[:], r, s)
+	if !isValid {
+		fmt.Println("❌ [VerifyVC] ECDSA 서명 검증 실패")
+		return false, errors.New("VC 서명이 유효하지 않습니다 (위조 또는 변조됨)")
+	}
+	fmt.Println("✅ [VerifyVC] 서명 검증 성공!")
+
+	// 6. VC 내용(Claim) 검증
 	credSubject, ok := vcData.CredentialSubject.(map[string]interface{})
 	if !ok {
-		fmt.Println("❌ [VerifyVC] CredentialSubject 형식이 map[string]interface{}가 아님")
-		return false, errors.New("VC의 CredentialSubject 형식이 올바르지 않습니다 (map[string]interface{} 기대)")
+		return false, errors.New("CredentialSubject 형식 오류")
 	}
-
-	fraudStatusInterface, claimExists := credSubject["fraudConvictionRecordStatus"]
-	if !claimExists {
-		// 'fraudConvictionRecordStatus' 클레임 자체가 없는 경우
-		// 데모 시나리오에서는 이 클레임이 항상 존재하고 유효한 값을 가진다고 가정할 수 있습니다.
-		// 만약 없다면, 오류로 처리하거나 "문제 없음"으로 간주할지 정책 결정 필요.
-		// 여기서는 "없으면 문제 없음"으로 간주하고 로그만 남깁니다.
-		fmt.Println("ℹ️ [VerifyVC] 'fraudConvictionRecordStatus' 클레임이 VC에 존재하지 않음 (정상으로 간주)")
-	} else {
-		fraudStatus, typeOk := fraudStatusInterface.(string)
-		if !typeOk {
-			fmt.Println("❌ [VerifyVC] 'fraudConvictionRecordStatus' 클레임 값이 문자열이 아님. 실제 타입:", fmt.Sprintf("%T", fraudStatusInterface))
-			return false, errors.New("'fraudConvictionRecordStatus' 클레임의 값이 문자열이 아닙니다")
-		}
-
-		fmt.Println("ℹ️ [VerifyVC] 'fraudConvictionRecordStatus' 클레임 값:", fraudStatus)
-		// 대소문자 구분 없이 "Exists"와 비교
-		if strings.EqualFold(fraudStatus, "Exists") {
-			fmt.Println("❌ [VerifyVC] 전과 기록 확인됨! 로그인 차단 필요.")
-			return false, errors.New("전과 기록이 확인되어 로그인이 제한됩니다.") // 이 오류 메시지가 Login 핸들러로 전달됨
-		}
-		fmt.Println("✅ [VerifyVC] 전과 기록 없음.")
+	hasCriminalRecord, ok := credSubject["criminal_record"].(bool)
+	if !ok {
+		return false, errors.New("'criminal_record' 클레임을 찾을 수 없거나 형식이 다릅니다")
 	}
+	if hasCriminalRecord {
+		return false, errors.New("전과 기록이 확인되어 로그인이 제한됩니다")
+	}
+	fmt.Println("✅ [VerifyVC] 전과 기록 없음 확인.")
 
-	// 모든 검증 통과
-	fmt.Println("✅ [VerifyVC] 모든 검증 통과. VC 유효함.")
+	fmt.Println("✅ [VerifyVC] 모든 검증 통과! VC 유효함.")
 	return true, nil
 }

@@ -23,7 +23,7 @@ orderers:
     grpcOptions:
       ssl-target-name-override: orderer.example.com
     tlsCACerts:
-      path: /Users/jinmyeong/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
+      path: organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
 
 peers:
   peer0.org1.example.com:
@@ -32,7 +32,7 @@ peers:
       ssl-target-name-override: peer0.org1.example.com
       discovery.asLocalhost: true
     tlsCACerts:
-      path: /Users/jinmyeong/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
+      path: organizations/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
 
 certificateAuthorities:
   ca.org1.example.com:
@@ -41,6 +41,6 @@ certificateAuthorities:
       enrollId: admin
       enrollSecret: adminpw
     tlsCACerts:
-      path: /Users/jinmyeong/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
+      path: organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
     httpOptions:
       verify: false

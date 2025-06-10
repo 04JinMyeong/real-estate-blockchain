@@ -4,6 +4,7 @@ import (
 	"encoding/json" // VC JSON 파싱을 위해 추가
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"realestate/database"
@@ -16,6 +17,55 @@ import (
 )
 
 var jwtKey = []byte("your_secret_key") // 실제 서비스에서는 환경변수나 안전한 저장소 사용
+
+type Claims struct {
+	UserID string `json:"user_id"`
+	Role   string `json:"role"`
+	jwt.RegisteredClaims
+}
+
+// AuthMiddleware는 토큰을 검증하고 사용자 정보를 다음 핸들러로 전달하는 미들웨어입니다.
+func AuthMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// 1. 요청 헤더에서 'Authorization' 값을 가져옵니다.
+		authHeader := c.GetHeader("Authorization")
+		if authHeader == "" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "인증 헤더가 없습니다."})
+			return
+		}
+
+		// 2. 토큰은 보통 "Bearer <token>" 형식이므로, "Bearer " 부분을 제거합니다.
+		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+		if tokenString == authHeader { // "Bearer "가 없는 경우
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Bearer 토큰 형식이 아닙니다."})
+			return
+		}
+
+		// 3. 토큰을 파싱하고 유효성을 검증합니다.
+		claims := &Claims{}
+		token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+			// 서명 방식이 HMAC인지 확인하고, 우리가 사용하는 비밀키(jwtKey)를 반환합니다.
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			}
+			return jwtKey, nil // jwtKey는 파일 상단에 정의된 것과 동일한 키
+		})
+
+		// 4. 파싱 중 에러가 발생했거나, 토큰이 유효하지 않은 경우 요청을 차단합니다.
+		if err != nil || !token.Valid {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "유효하지 않은 토큰입니다."})
+			return
+		}
+
+		// 5. 토큰이 유효하면, 다음 핸들러(IssueVC)에서 사용할 수 있도록
+		//    Context에 사용자 정보를 저장합니다.
+		c.Set("userID", claims.UserID)
+		c.Set("userRole", claims.Role)
+
+		// 6. 모든 검증을 통과했으므로, 다음 핸들러로 요청을 전달합니다.
+		c.Next()
+	}
+}
 
 // 회원가입 핸들러
 func Signup(c *gin.Context) {
@@ -75,19 +125,20 @@ func Signup(c *gin.Context) {
 
 // 로그인 핸들러
 func Login(c *gin.Context) {
+	// --- ▼ 1단계: VC를 선택적으로 받도록 구조체 수정 ---
 	var req struct {
 		ID       string `json:"id"`
 		Password string `json:"password"`
-		VC       string `json:"vc" binding:"required"` // VC를 JSON 문자열로 받음
+		VC       string `json:"vc"` // binding:"required" 제거
 	}
 
 	// 요청 바인딩 및 기본 검증
 	if err := c.ShouldBindJSON(&req); err != nil {
-		fmt.Println("[Login Handler] Error binding JSON:", err.Error()) // 바인딩 에러 시 로그 추가
 		c.JSON(http.StatusBadRequest, gin.H{"error": "입력값이 올바르지 않습니다: " + err.Error()})
 		return
 	}
 
+	// DB에서 사용자 정보 조회 (기존과 동일)
 	db := database.GetDB()
 	var user models.User
 	if err := db.First(&user, "id = ?", req.ID).Error; err != nil {
@@ -95,72 +146,54 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	// 비밀번호 검증 (기존과 동일)
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "비밀번호가 일치하지 않습니다"})
 		return
 	}
 
-	// VC가 비어있는 경우의 처리 (binding:"required"가 이미 처리하지만, 방어적으로 추가)
-	if req.VC == "" { // 이 부분은 binding:"required"에 의해 사실상 도달하기 어려움
-		fmt.Println("[Login Handler] VC string is empty, though binding was required.")
-		c.JSON(http.StatusBadRequest, gin.H{"error": "VC가 제출되지 않았습니다."})
-		return
-	}
-
-	// VC 문자열을 vc.VerifiableCredential 구조체로 언마샬링
-	var receivedUserVC vc.VerifiableCredential             // vc 패키지에 정의된 구조체 사용
-	err := json.Unmarshal([]byte(req.VC), &receivedUserVC) // err 변수 새로 선언
-	if err != nil {
-		fmt.Println("[Login Handler] Error unmarshalling VC:", err.Error()) // VC 파싱 에러 로그
-		c.JSON(http.StatusBadRequest, gin.H{"error": "제출된 VC의 JSON 형식이 올바르지 않습니다: " + err.Error()})
-		return
-	}
-	fmt.Println("[Login Handler] VC unmarshalled successfully. VC ID:", receivedUserVC.ID)
-
-	// VC 소유권 확인 (공인중개사 역할일 때)
+	// --- ▼ 2단계: 역할(Role)에 따라 VC 검증 로직 분기 ---
 	if user.Role == "agent" {
-		if user.DID == "" {
-			fmt.Println("[Login Handler] User is agent but DID is missing in DB for user:", user.ID)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "사용자의 DID 정보가 DB에 없습니다. VC 검증 불가."})
+		// 역할이 'agent'인 경우, VC 검증 절차를 시작합니다.
+		fmt.Printf("[Login Handler] User %s is an agent. Starting VC verification.\n", user.ID)
+
+		// 1. 공인중개사가 VC를 제출했는지 확인
+		if req.VC == "" {
+			fmt.Printf("[Login Handler] Agent %s did not submit a VC.\n", user.ID)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "공인중개사 로그인을 위해서는 VC를 반드시 제출해야 합니다."})
 			return
 		}
 
-		credSubject, ok := receivedUserVC.CredentialSubject.(map[string]interface{})
-		if !ok {
-			fmt.Println("[Login Handler] VC CredentialSubject is not map[string]interface{}")
-			c.JSON(http.StatusBadRequest, gin.H{"error": "VC의 CredentialSubject 형식이 올바르지 않습니다."})
+		// 2. VC 소유권 검증 (기존 코드를 그대로 활용)
+		var receivedUserVC vc.VerifiableCredential
+		if err := json.Unmarshal([]byte(req.VC), &receivedUserVC); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "제출된 VC의 JSON 형식이 올바르지 않습니다: " + err.Error()})
 			return
 		}
-		vcOwnerDID, ok := credSubject["id"].(string)
-		if !ok {
-			fmt.Println("[Login Handler] VC CredentialSubject.id is missing or not a string")
-			c.JSON(http.StatusBadRequest, gin.H{"error": "VC의 CredentialSubject에 id(DID) 필드가 없거나 문자열이 아닙니다."})
-			return
-		}
-
+		credSubject, _ := receivedUserVC.CredentialSubject.(map[string]interface{})
+		vcOwnerDID, _ := credSubject["id"].(string)
 		if user.DID != vcOwnerDID {
-			fmt.Printf("[Login Handler] VC Ownership Mismatch: User DID (%s) != VC DID (%s)\n", user.DID, vcOwnerDID)
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "VC 소유권 검증 실패: 제출된 VC는 현재 사용자의 것이 아닙니다."})
 			return
 		}
-		fmt.Printf("[Login Handler] VC ownership verified for user %s\n", user.ID)
-	}
 
-	// VC 유효성 및 클레임 검증 (vc.VerifyVC 함수 사용)
-	// vc.VerifyVC는 (bool, error)를 반환한다고 가정합니다.
-	isValid, verificationErr := vc.VerifyVC(req.VC)
-	if verificationErr != nil {
-		fmt.Printf("[Login Handler] VC verification error: %v\n", verificationErr)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "VC 유효성 검증 오류: " + verificationErr.Error()})
-		return
+		// 3. VC 유효성 및 클레임 검증 (기존 코드를 그대로 활용)
+		isValid, verificationErr := vc.VerifyVC(req.VC) // 이 함수가 Claim 검증까지 내부적으로 처리한다고 가정
+		if verificationErr != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "VC 유효성 검증 오류: " + verificationErr.Error()})
+			return
+		}
+		if !isValid {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "제출된 VC가 유효하지 않거나 자격이 맞지 않습니다."})
+			return
+		}
+		fmt.Printf("[Login Handler] Agent %s successfully verified VC.\n", user.ID)
 	}
-	if !isValid {
-		fmt.Println("[Login Handler] VC is not valid (isValid is false)")
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "제출된 VC가 유효하지 않습니다."})
-		return
-	}
+	// 역할이 'user'인 경우, 위 'if user.Role == "agent"' 블록을 모두 건너뛰고 바로 여기로 오게 됩니다.
 
-	// ✅ JWT 생성
+	fmt.Printf("[Login Handler] All checks passed for user %s with role %s. Generating JWT.\n", user.ID, user.Role)
+
+	// ✅ JWT 생성 (기존과 동일)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": user.ID,
 		"role":    user.Role,
@@ -173,7 +206,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// ✅ 역할 함께 응답
+	// ✅ 역할 함께 응답 (기존과 동일)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "✅ 로그인 성공",
 		"token":   tokenString,
