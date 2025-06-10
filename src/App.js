@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import './App.css';
 import backgroundImage from './background.jpg';
-
 import Header from './components/Header';
 import MapView from './components/MapView';
 import Login from './components/Login';

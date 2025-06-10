@@ -6,7 +6,8 @@ import './PropertyDetail.css';
 
 // (1) 정적 파일 라우터 기본 URL
 //     실제 서버 주소/포트나 ngrok 주소로 변경해주세요.
-const API_URL = 'https://2094-165-229-229-106.ngrok-free.app';
+//const API_URL = 'https://2094-165-229-229-106.ngrok-free.app';
+const API_URL = 'http://localhost:8080'; // 로컬 개발용
 
 /**
  * UTC 문자열을 KST(한국 시간) 형식으로 바꿔줍니다.
@@ -19,10 +20,10 @@ function toKST(utcStr) {
   const d = new Date(iso);
 
   return d.toLocaleString('ko-KR', {
-    year:   'numeric',
-    month:  '2-digit',
-    day:    '2-digit',
-    hour:   '2-digit',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
     hour12: false,
@@ -33,8 +34,8 @@ function toKST(utcStr) {
 export default function PropertyDetail() {
   const { id } = useParams();
   const [property, setProperty] = useState(null);
-  const [history,  setHistory]  = useState([]);
-  const [loading,  setLoading]  = useState(true);
+  const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // 1) 매물 단건 조회 (admin 고정)
@@ -45,7 +46,7 @@ export default function PropertyDetail() {
       .then(res => {
         let p = res.data.property;
         if (typeof p === 'string') {
-          try { p = JSON.parse(p); } catch {}
+          try { p = JSON.parse(p); } catch { }
         }
         console.log('🛰️ 서버에서 내려준 property →', p);
         setProperty(p);
@@ -63,7 +64,7 @@ export default function PropertyDetail() {
       .then(res => {
         let h = res.data.history || res.data;
         if (typeof h === 'string') {
-          try { h = JSON.parse(h); } catch {}
+          try { h = JSON.parse(h); } catch { }
         }
         console.log('🛰️ 서버에서 내려준 history →', h);
         setHistory(h);
@@ -82,23 +83,23 @@ export default function PropertyDetail() {
 
   // —————————————————————————
   // 3) 이미지 URL 결정
-const rawImg = property.photoUrl || '';
-let imgSrc = null;
+  const rawImg = property.photoUrl || '';
+  let imgSrc = null;
 
-if (rawImg) {
-  if (rawImg.startsWith('https://2094-165-229-229-106.ngrok-free.app') || rawImg.startsWith('https://2094-165-229-229-106.ngrok-free.app')) {
-    imgSrc = rawImg.replace('https://2094-165-229-229-106.ngrok-free.app', API_URL).replace('https://2094-165-229-229-106.ngrok-free.app', API_URL);
-  } else if (rawImg.startsWith(API_URL)) {
-    imgSrc = rawImg;
-  } else if (rawImg.startsWith('http://') || rawImg.startsWith('https://')) {
-    imgSrc = rawImg;
-  } else {
-    let normalized = rawImg.replace(/\\/g, '/');
-    if (!normalized.startsWith('/')) normalized = '/' + normalized;
-    imgSrc = `${API_URL}${normalized}`;
+  if (rawImg) {
+    if (rawImg.startsWith('https://2094-165-229-229-106.ngrok-free.app') || rawImg.startsWith('https://2094-165-229-229-106.ngrok-free.app')) {
+      imgSrc = rawImg.replace('https://2094-165-229-229-106.ngrok-free.app', API_URL).replace('https://2094-165-229-229-106.ngrok-free.app', API_URL);
+    } else if (rawImg.startsWith(API_URL)) {
+      imgSrc = rawImg;
+    } else if (rawImg.startsWith('http://') || rawImg.startsWith('https://')) {
+      imgSrc = rawImg;
+    } else {
+      let normalized = rawImg.replace(/\\/g, '/');
+      if (!normalized.startsWith('/')) normalized = '/' + normalized;
+      imgSrc = `${API_URL}${normalized}`;
+    }
   }
-}
-console.log('🖼️ 실제로 사용하는 imgSrc →', imgSrc);
+  console.log('🖼️ 실제로 사용하는 imgSrc →', imgSrc);
   // —————————————————————————
 
   // 4) 가격 / 소유자 / 등록일(UTC→KST) / 상태

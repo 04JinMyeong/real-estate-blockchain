@@ -1,42 +1,43 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // 추가!
 
-const API_URL            = 'https://2094-165-229-229-106.ngrok-free.app';
-const KAKAO_JS_KEY       = '4f98b430d3ac0e982a3c3bd31b8b410d';
+const API_URL = 'https://2094-165-229-229-106.ngrok-free.app';
+//const API_URL            = 'https://2094-165-229-229-106.ngrok-free.app';
+const KAKAO_JS_KEY = '4f98b430d3ac0e982a3c3bd31b8b410d';
 const KAKAO_REST_API_KEY = 'c32790578348e6ef920eca53f2c23382';
-const DEFAULT_CENTER     = { lat: 37.5665, lng: 126.9780 };
+const DEFAULT_CENTER = { lat: 37.5665, lng: 126.9780 };
 const handleReserve = async (property) => {
-    // 실제 로그인 유저 정보 필요하면 props로 받아서 user.username 사용 (아래처럼 property.createdBy도 임시로 가능)
-    const expiresAt = Math.floor(Date.now() / 1000) + 12 * 3600;
-    const payload = {
-      user: property.createdBy, // 혹은 로그인한 유저 정보로 교체!
-      id: property.id,
-      expiresAt
-    };
-    const token = localStorage.getItem('token');
-    try {
-      const res = await fetch(
-        `${API_URL}/reserve-property`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-            'ngrok-skip-browser-warning': 'true'
-          },
-          body: JSON.stringify(payload)
-        }
-      );
-      const data = await res.json();
-      alert(data.message || '✅ 예약이 완료되었습니다.');
-      // 예약 성공 후 목록 갱신 원하면 아래 둘 중 하나 사용:
-      // 방법1: 전체 새로고침 (간단)
-      window.location.reload();
-      // 방법2: setProperties로 state만 갱신 (원하면 따로 안내 가능)
-    } catch (err) {
-      alert('예약 실패: ' + err.message);
-    }
+  // 실제 로그인 유저 정보 필요하면 props로 받아서 user.username 사용 (아래처럼 property.createdBy도 임시로 가능)
+  const expiresAt = Math.floor(Date.now() / 1000) + 12 * 3600;
+  const payload = {
+    user: property.createdBy, // 혹은 로그인한 유저 정보로 교체!
+    id: property.id,
+    expiresAt
   };
+  const token = localStorage.getItem('token');
+  try {
+    const res = await fetch(
+      `${API_URL}/reserve-property`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+    const data = await res.json();
+    alert(data.message || '✅ 예약이 완료되었습니다.');
+    // 예약 성공 후 목록 갱신 원하면 아래 둘 중 하나 사용:
+    // 방법1: 전체 새로고침 (간단)
+    window.location.reload();
+    // 방법2: setProperties로 state만 갱신 (원하면 따로 안내 가능)
+  } catch (err) {
+    alert('예약 실패: ' + err.message);
+  }
+};
 
 export default function KakaoMap() {
   const [properties, setProperties] = useState([]);
@@ -164,9 +165,9 @@ export default function KakaoMap() {
               if (!p.reservedBy) {
                 const reserveBtn = document.querySelector(`.map-reserve-btn[data-id="${p.id}"]`);
                 if (reserveBtn) {
-      reserveBtn.onclick = (e) => {
-        e.preventDefault();
-        handleReserve(p);
+                  reserveBtn.onclick = (e) => {
+                    e.preventDefault();
+                    handleReserve(p);
                   };
                 }
               }

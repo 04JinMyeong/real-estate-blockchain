@@ -17,15 +17,17 @@ export default function AgentMypage({ user }) {
       }
       try {
         const res = await fetch(
-          `https://2094-165-229-229-106.ngrok-free.app/my-properties?user=${user.username}`
+          // 반드시 현재 동작 중인 ngrok 주소(또는 배포된 API 주소)로 바꿔주세요.
+          //`https://2094-165-229-229-106.ngrok-free.app/my-properties?user=${user.username}`
+          `http://localhost:8080/my-properties?user=${user.username}` // 로컬 개발용
         );
         const data = await res.json();
         setProperties(
           Array.isArray(data.properties)
             ? data.properties
             : Array.isArray(data)
-            ? data
-            : []
+              ? data
+              : []
         );
       } catch {
         setProperties([]);
@@ -42,15 +44,17 @@ export default function AgentMypage({ user }) {
     if (!user) return;
     try {
       const res = await fetch(
-        `https://2094-165-229-229-106.ngrok-free.app/my-properties?user=${user.username}`
+        // 반드시 현재 동작 중인 ngrok 주소(또는 배포된 API 주소)로 바꿔주세요.
+        //`https://2094-165-229-229-106.ngrok-free.app/my-properties?user=${user.username}`
+        `http://localhost:8080/my-properties?user=${user.username}` // 로컬 개발용
       );
       const data = await res.json();
       setProperties(
         Array.isArray(data.properties)
           ? data.properties
           : Array.isArray(data)
-          ? data
-          : []
+            ? data
+            : []
       );
     } catch {
       setProperties([]);
@@ -73,8 +77,8 @@ export default function AgentMypage({ user }) {
           user={user}
           mode="my"
           onReserve={refreshMyList}
-          // 위 컴포넌트처럼 ref를 사용해 직접 fetchProperties를 호출해도 되지만,
-          // 여기서는 onReserve 콜백을 통해 목록을 갱신하도록 했습니다.
+        // 위 컴포넌트처럼 ref를 사용해 직접 fetchProperties를 호출해도 되지만,
+        // 여기서는 onReserve 콜백을 통해 목록을 갱신하도록 했습니다.
         />
       </div>
     </div>

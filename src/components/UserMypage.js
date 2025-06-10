@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import PropertyList from './PropertyList';
-const API_URL = 'https://2094-165-229-229-106.ngrok-free.app';
+
+//const API_URL = 'https://2094-165-229-229-106.ngrok-free.app';
+const API_URL = 'http://localhost:8080'; // 로컬 개발용
 
 const UserMypage = ({ user }) => {
   const [myReservations, setMyReservations] = useState([]);
@@ -36,10 +38,10 @@ const UserMypage = ({ user }) => {
         ) : (
           <ul>
             {(Array.isArray(myReservations) ? myReservations : []).map(resv => (
-    <li key={resv.reservationId}>
-      [매물ID: {resv.propertyId}] {resv.date} {resv.time} - {resv.status}
-    </li>
-  ))}
+              <li key={resv.reservationId}>
+                [매물ID: {resv.propertyId}] {resv.date} {resv.time} - {resv.status}
+              </li>
+            ))}
           </ul>
         )}
       </div>

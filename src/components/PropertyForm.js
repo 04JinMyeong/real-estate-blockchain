@@ -4,9 +4,11 @@ import axios from 'axios';
 import './PropertyForm.css';
 
 // 실제 백엔드 주소(ngrok 등)로 교체하세요.
-const API_URL = 'https://2094-165-229-229-106.ngrok-free.app';
+//const API_URL = 'https://2094-165-229-229-106.ngrok-free.app';
+const API_URL = 'http://localhost:8080'; // 로컬 개발용
 
 export default function PropertyForm({ user, onRegister }) {
+  console.log('▶ PropertyForm received user:', user);
   // 1) 매물 정보: 주소 · 소유자 · 가격
   const [form, setForm] = useState({
     address: '',
@@ -54,7 +56,7 @@ export default function PropertyForm({ user, onRegister }) {
 
         // **중요: 백엔드는 `photo`라는 필드명(FormFile("photo"))으로 가져갑니다.**
         const photoData = new FormData();
-        photoData.append('photo', photoFile);  
+        photoData.append('photo', photoFile);
         // ^^^ 여기 key를 "photo"로 반드시 맞춰야 합니다.
 
         const photoRes = await axios.post(
@@ -76,27 +78,25 @@ export default function PropertyForm({ user, onRegister }) {
       // 2단계: 매물 등록
       console.log('👉 2단계: 매물 등록 시작');
       console.log('   payload →', {
-        user:     user?.username || user?.id,
-        address:  form.address,
-        owner:    form.owner,
-        price:    form.price,
+        user: user?.username || user?.id,
+        address: form.address,
+        owner: form.owner,
+        price: form.price,
         photoUrl: finalPhotoUrl
       });
 
       const addRes = await axios.post(
         `${API_URL}/add-property`,
         {
-          user:     user?.username || user?.id,
-          address:  form.address,
-          owner:    form.owner,
-          price:    form.price,
+          user: user?.username,     // ← 여기를 꼭 추가!
+          address: form.address,
+          owner: form.owner,
+          price: form.price,
           photoUrl: finalPhotoUrl
         },
         {
           headers: {
             'Content-Type': 'application/json'
-            // ngrok 스킵 헤더가 필요하면 여기에 추가
-            // 'ngrok-skip-browser-warning': 'true'
           }
         }
       );

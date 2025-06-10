@@ -17,6 +17,8 @@ const SignupAgent = () => {
     platform_username: '', // 백엔드 SignUpBrokerRequest의 PlatformUsername 필드와 매칭
     platform_password: '', // 백엔드 SignUpBrokerRequest의 PlatformPassword 필드와 매칭
     confirmPassword: '',   // 비밀번호 확인용
+    agentName: '',
+    registerationNumber: '',
   });
 
   const [generatedPrivateKey, setGeneratedPrivateKey] = useState(''); // 생성된 개인키 임시 저장 (사용자 안내용)
@@ -48,9 +50,9 @@ const SignupAgent = () => {
       return;
     }
 
-    // 필수 입력 필드 검증 수정
-    if (!form.platform_username || !form.platform_password) {
-      alert('❌ 사용자 아이디와 비밀번호를 모두 입력해주세요.');
+    // 필수 입력 필드 검증 수정 (agentName과 registrationNumber 추가)
+    if (!form.platform_username || !form.platform_password || !form.agentName || !form.registrationNumber) {
+      alert('❌ 모든 필수 정보를 입력해주세요.');
       return;
     }
 
@@ -72,7 +74,9 @@ const SignupAgent = () => {
         platform_username: form.platform_username,
         platform_password: form.platform_password,
         agent_public_key: agentPublicKeyBase64,
-        role: 'agent'
+        role: 'agent',
+        agentName: form.agentName,
+        registrationNumber: form.registrationNumber,
       };
 
       // Axios를 사용하여 백엔드 API 호출
@@ -139,6 +143,24 @@ const SignupAgent = () => {
           required
         />
         <hr />
+        <p style={{ textAlign: 'center', color: '#666' }}>공인중개사 자격 확인</p>
+        {/* --- ▼ 이 두 개의 input 필드를 추가합니다 ▼ --- */}
+        <input
+          name="agentName"
+          type="text"
+          placeholder="대표자 성명"
+          value={form.agentName}
+          onChange={handleChange}
+          required
+        />
+        <input
+          name="registrationNumber"
+          type="text"
+          placeholder="자격증 등록번호"
+          value={form.registrationNumber}
+          onChange={handleChange}
+          required
+        />
         <button type="submit">회원가입 및 DID 발급</button>
       </form>
       {/* ◀◀◀ DID 및 개인키 정보 표시 UI 수정 */}

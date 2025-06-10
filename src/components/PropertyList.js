@@ -10,7 +10,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 // import './PropertyList.css';
 
-const API_URL = 'https://2094-165-229-229-106.ngrok-free.app';
+//const API_URL = 'https://2094-165-229-229-106.ngrok-free.app';
+const API_URL = 'http://localhost:8080'; // 로컬 개발용
 
 // 남은 초 → "H:MM:SS" 포맷 변환 함수
 function formatLeftTime(sec) {
@@ -39,8 +40,8 @@ const PropertyList = forwardRef(({ user, mode = 'all', onReserve }, ref) => {
     try {
       let url = mode === 'my'
         ? (user?.username
-            ? `${API_URL}/my-properties?user=${user.username}`
-            : '')
+          ? `${API_URL}/my-properties?user=${user.username}`
+          : '')
         : `${API_URL}/properties?user=admin`;
 
       if (!url) {
@@ -54,8 +55,8 @@ const PropertyList = forwardRef(({ user, mode = 'all', onReserve }, ref) => {
       const arr = Array.isArray(res.data.properties)
         ? res.data.properties
         : Array.isArray(res.data)
-        ? res.data
-        : [];
+          ? res.data
+          : [];
       setProperties(arr);
     } catch (err) {
       setProperties([]);
@@ -186,9 +187,9 @@ const PropertyList = forwardRef(({ user, mode = 'all', onReserve }, ref) => {
                   {p.reservedBy && leftSeconds > 0 ? (
                     <>
                       <span style={{ color: 'red', lineHeight: '32px' }}>예약됨</span>
-            <span style={{ color: '#555', marginLeft: 8 }}>
-              남은 시간: {formatLeftTime(leftSeconds)}
-            </span>
+                      <span style={{ color: '#555', marginLeft: 8 }}>
+                        남은 시간: {formatLeftTime(leftSeconds)}
+                      </span>
                     </>
                   ) : (
                     <button onClick={() => handleReserve(p)}>

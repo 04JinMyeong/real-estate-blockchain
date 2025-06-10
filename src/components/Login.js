@@ -97,6 +97,7 @@ export default function Login({ onLogin }) {
 
       // onLogin 콜백에 전달할 사용자 정보에 did도 포함
       let userInfoToPass = {
+        username: userId,
         email: form.id,
         role: role,
         username: userId,

@@ -1,100 +1,90 @@
-// src/components/VcIssueModal.js
+import React, { useState } from 'react';
+import axios from 'axios';
+import './VcIssueModal.css';
 
-import React, { useState } from "react";
-import "./VcIssueModal.css";
+const MOCK_ISSUER_API_ENDPOINT = 'http://localhost:8083/issue-vc';
 
 function VcIssueModal({ onClose }) {
-    // 1) 입력 폼에 필요한 state 선언
-    const [name, setName] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [licenseNumber, setLicenseNumber] = useState("");
-    const [gender, setGender] = useState("");
-    const [did, setDid] = useState("");
+    const [formData, setFormData] = useState({ name: '', id: '', did: '' });
+    const [isLoading, setIsLoading] = useState(false);
+    const [issuedVC, setIssuedVC] = useState(null);
+    const [error, setError] = useState('');
 
-    // 2) 폼 제출 핸들러
-    const handleSubmit = (e) => {
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
+        setError('');
+        setIssuedVC(null);
 
-        // 빈 칸 체크
-        if (!name || !phoneNumber || !licenseNumber || !gender || !did) {
-            alert("모든 정보를 입력해주세요.");
-            return;
+        try {
+            const response = await axios.post(MOCK_ISSUER_API_ENDPOINT, formData);
+            setIssuedVC(response.data.vc);
+        } catch (err) {
+            setError(`VC 발급 실패: ${err.response?.data?.error || err.message}`);
+        } finally {
+            setIsLoading(false);
         }
+    };
 
-        // 실제 발급 로직(예: axios/fetch)을 여기서 처리할 수도 있음
-        // 예시: axios.post("/api/vc/issue", { name, email, did })
-        //       .then(response => { ... }).catch(err => { ... });
+    // --- ▼▼▼ 1. 클립보드 복사 기능 구현 ▼▼▼ ---
+    const copyToClipboard = () => {
+        if (!issuedVC) return;
+        const vcString = JSON.stringify(issuedVC, null, 2);
+        navigator.clipboard.writeText(vcString).then(() => {
+            alert('✅ VC가 클립보드에 복사되었습니다!');
+        }).catch(err => {
+            console.error('클립보드 복사 실패:', err);
+            alert('❌ 클립보드 복사에 실패했습니다.');
+        });
+    };
 
-        // 지금은 단순 알림
-        alert("발급이 완료되었습니다!");
-        onClose(); // 모달 닫기
+    // --- ▼▼▼ 2. 파일 다운로드 기능 구현 ▼▼▼ ---
+    const downloadVCAsFile = () => {
+        if (!issuedVC) return;
+        const vcString = JSON.stringify(issuedVC, null, 2);
+        const blob = new Blob([vcString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'my-real-estate-vc.json'; // 다운로드될 파일 이름
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
     };
 
     return (
         <div className="vc-modal-overlay">
             <div className="vc-modal-content">
-                {/* 닫기 버튼(×) */}
-                <button className="vc-modal-close" onClick={onClose}>
-                    &times;
-                </button>
+                <button className="vc-modal-close" onClick={onClose}>&times;</button>
+                <h2>📜 자격증명(VC) 발급</h2>
 
-                <h2>VC 발급 정보 입력</h2>
-                <form className="vc-issue-form" onSubmit={handleSubmit}>
-                    {/* (3) 이름(Name) */}
-                    <label htmlFor="vc-name">ID</label>
-                    <input
-                        id="vc-name"
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="홍길동"
-                    />
+                {!issuedVC ? (
+                    <form onSubmit={handleSubmit}>
+                        <p>VC를 발급받기 위해 정보를 입력해주세요.</p>
+                        <input name="name" type="text" value={formData.name} onChange={handleChange} placeholder="이름" required />
+                        <input name="id" type="text" value={formData.id} onChange={handleChange} placeholder="아이디" required />
+                        <input name="did" type="text" value={formData.did} onChange={handleChange} placeholder="발급받은 DID" required />
+                        <button type="submit" disabled={isLoading}>{isLoading ? '발급 중...' : 'VC 발급'}</button>
+                        {error && <p style={{ color: 'red' }}>{error}</p>}
+                    </form>
+                ) : (
+                    <div className="issued-info-display">
+                        <h3>[중요] 발급된 VC 정보</h3>
+                        <p>아래 VC 정보를 복사하거나 파일로 다운로드하여 안전하게 보관하세요. **로그인 시 필요합니다.**</p>
+                        <textarea value={JSON.stringify(issuedVC, null, 2)} readOnly rows="10" />
 
-                    {/* (4) 전화번호(Phone Number) */}
-                    <label htmlFor="vc-phone">PassWord</label>
-                    <input
-                        id="vc-phone"
-                        type="text"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                        placeholder="010-1234-5678"
-                    />
-
-                    {/* (5) 자격증번호(License Number) */}
-                    <label htmlFor="vc-license">자격증번호</label>
-                    <input
-                        id="vc-license"
-                        type="text"
-                        value={licenseNumber}
-                        onChange={(e) => setLicenseNumber(e.target.value)}
-                        placeholder="ABCD-1234"
-                    />
-
-                    {/* (6) 성별(Gender) */}
-                    <label htmlFor="vc-gender">성별</label>
-                    <input
-                        id="vc-gender"
-                        type="text"
-                        value={gender}
-                        onChange={(e) => setGender(e.target.value)}
-                        placeholder="남자 / 여자 / 기타"
-                    />
-
-                    {/* (7) DID (기존) */}
-                    <label htmlFor="vc-did">DID</label>
-                    <input
-                        id="vc-did"
-                        type="text"
-                        value={did}
-                        onChange={(e) => setDid(e.target.value)}
-                        placeholder="did:example:123456789"
-                    />
-
-                    {/* (8) 제출 버튼 */}
-                    <button type="submit" className="vc-submit-button">
-                        지금 VC발급받기
-                    </button>
-                </form>
+                        {/* --- ▼▼▼ 버튼 UI 수정 ▼▼▼ --- */}
+                        <div className="button-group">
+                            <button onClick={copyToClipboard}>VC 텍스트 복사</button>
+                            <button onClick={downloadVCAsFile}>VC 파일로 다운로드</button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

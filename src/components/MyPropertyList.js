@@ -4,7 +4,9 @@ import axios from 'axios';
 import './PropertyForm.css';
 
 // 본인의 ngrok 주소로 반드시 변경하세요
-const API_URL = 'https://2094-165-229-229-106.ngrok-free.app';
+const BASE_API_URL = 'http://localhost:8080'
+
+//const API_URL = 'https://2094-165-229-229-106.ngrok-free.app';
 
 export default function PropertyForm({ user, onRegister }) {
   const [form, setForm] = useState({
@@ -63,20 +65,20 @@ export default function PropertyForm({ user, onRegister }) {
 
       // ─── 2단계: 매물 등록 ───
       console.log('👉 2단계: 매물 등록 시작 → payload:', {
-        user:     user.username || user.id,
-        address:  form.address,
-        owner:    form.owner,
-        price:    form.price,
+        user: user.username || user.id,
+        address: form.address,
+        owner: form.owner,
+        price: form.price,
         photoUrl  // upload-photo에서 받은 URL (없으면 빈 문자열)
       });
 
       const addRes = await axios.post(
         `${API_URL}/add-property`,
         {
-          user:     user.username || user.id,
-          address:  form.address,
-          owner:    form.owner,
-          price:    form.price,
+          user: user.username || user.id,
+          address: form.address,
+          owner: form.owner,
+          price: form.price,
           photoUrl
         }
       );
@@ -98,8 +100,8 @@ export default function PropertyForm({ user, onRegister }) {
       alert(
         '⚠️ 오류가 발생했습니다:\n' +
         (err.response?.data?.error ||
-         err.response?.data?.detail ||
-         err.message)
+          err.response?.data?.detail ||
+          err.message)
       );
     } finally {
       setUploading(false);

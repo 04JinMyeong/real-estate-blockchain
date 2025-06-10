@@ -3,7 +3,8 @@ import PropertyList from './PropertyList';
 import KakaoMap from './KakaoMap';
 import './MapView.css';
 
-const API_URL = 'https://2094-165-229-229-106.ngrok-free.app';
+//const API_URL = 'https://2094-165-229-229-106.ngrok-free.app';
+const API_URL = 'http://localhost:8080'; // 로컬 개발용
 
 const MapView = ({ user }) => {
   const [properties, setProperties] = useState([]);
@@ -35,8 +36,8 @@ const MapView = ({ user }) => {
           ref={propertyListRef}
           user={user}
           mode="all"
-          // PropertyList가 내부적으로 fetchProperties를 쓴다면, 따로 setProperties는 안 건드려도 됨
-          // properties={properties} // (만약 PropertyList를 props 기반으로 리팩토링하면 추가)
+        // PropertyList가 내부적으로 fetchProperties를 쓴다면, 따로 setProperties는 안 건드려도 됨
+        // properties={properties} // (만약 PropertyList를 props 기반으로 리팩토링하면 추가)
         />
       </div>
     </div>
