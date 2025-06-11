@@ -36,11 +36,11 @@ peers:
 
 certificateAuthorities:
   ca.org1.example.com:
-    url: https://localhost:7054
+    url: http://localhost:7055
+    tlsCACerts:
+      path: ./organizations/fabric-ca/org1/tls-cert.pem
     registrar:
       enrollId: admin
       enrollSecret: adminpw
-    tlsCACerts:
-      path: organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
     httpOptions:
-      verify: false
+      verify: true

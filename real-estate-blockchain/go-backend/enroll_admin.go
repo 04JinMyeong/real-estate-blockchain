@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
 	"github.com/hyperledger/fabric-sdk-go/pkg/core/config"
@@ -10,7 +11,9 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/gateway"
 )
 
-func Enrollmain() {
+func main() {
+
+	os.Setenv("FABRIC_CA_CLIENT_TLS_CERTFILES", "./organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem")
 	sdk, err := fabsdk.New(config.FromFile("./connection-org1.yaml"))
 	if err != nil {
 		log.Fatalf("❌ SDK 생성 실패: %v", err)
